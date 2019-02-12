@@ -4,7 +4,7 @@ Tatt creates a uniform API for multiple speech-to-text (STT) services.
 
 ## Installation
 
-    `pip install git+https://github.com/zevaverbach/tatt`
+    pip install git+https://github.com/zevaverbach/tatt
 
 
 ## Dependencies
