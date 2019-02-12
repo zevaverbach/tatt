@@ -7,6 +7,7 @@ import uuid
 import boto3
 
 import config
+import exceptions
 
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)
@@ -15,14 +16,11 @@ tr = boto3.client('transcribe')
 s3 = boto3.resource('s3')
 
 
-class ConfigError(Exception):
-    pass
-
-
 class transcribe:
 
     bucket_names = {'media': BUCKET_NAME_MEDIA,
                     'transcript': BUCKET_NAME_TRANSCRIPT}
+    service_name = 'amazon'
 
     def __init__(self, filepath):
         self._setup()
@@ -49,7 +47,11 @@ class transcribe:
 
     def transcribe(self):
         self._upload_file()
-        return self._request_transcription()
+        try:
+            return self._request_transcription()
+        except tr.exceptions.ConflictException:
+            raise exceptions.AlreadyExistsError(
+                f'{self.basename} already exists on {self.service_name}')
 
     def _upload_file(self):
         s3.Bucket(self.bucket_names['media']).upload_file(
@@ -57,7 +59,7 @@ class transcribe:
                 self.basename)
 
     def _request_transcription(self, language_code='en-US'):
-        job_name = str(uuid.uuid4())
+        job_name = self.basename
         tr.start_transcription_job(
                 TranscriptionJobName=job_name,
                 LanguageCode=language_code,
@@ -70,22 +72,28 @@ class transcribe:
         return job_name
 
     @staticmethod
-    def get_completed_jobs():
-        return transcribe.get_transcription_jobs(status='completed')
+    def get_completed_jobs(job_name_query=None):
+        return transcribe.get_transcription_jobs(
+                status='completed',
+                job_name_query=job_name_query)
 
     @staticmethod
-    def get_pending_jobs():
-        return transcribe.get_transcription_jobs(status='in_progress')
+    def get_pending_jobs(job_name_query=None):
+        return transcribe.get_transcription_jobs(
+                status='in_progress',
+                job_name_query=job_name_query)
 
     @staticmethod
-    def get_all_jobs():
-        return transcribe.get_transcription_jobs()
+    def get_all_jobs(job_name_query=None):
+        return transcribe.get_transcription_jobs(job_name_query)
 
     @staticmethod
-    def get_transcription_jobs(status=None):
+    def get_transcription_jobs(status=None, job_name_query=None):
         kwargs = {'MaxResults': 100}
         if status is not None:
             kwargs['Status'] = status.upper()
+        if job_name_query is not None:
+            kwargs['JobNameContains'] = job_name_query
         jobs_data = tr.list_transcription_jobs(**kwargs)
         jobs = homogenize_transcription_job_data(jobs_data['TranscriptionJobSummaries'])
         while jobs_data.get('NextToken'):
@@ -93,6 +101,27 @@ class transcribe:
             jobs += homogenize_transcription_job_data(
                         jobs_data['TranscriptionJobSummaries'])
         return jobs
+
+    @staticmethod
+    def retrieve_transcript(transcription_job_name):
+        job = tr.get_transcription_job(
+            TranscriptionJobName=transcription_job_name
+        )['TranscriptionJob']
+
+        if not job['TranscriptionJobStatus'] == 'COMPLETED':
+            return
+
+        transcript_file_uri = job['Transcript']['TranscriptFileUri']
+        transcript_path = transcript_file_uri.split("amazonaws.com/", 1)[1]
+
+        transcript_bucket = transcript_path.split('/', 1)[0]
+        transcript_key = transcript_path.split('/', 1)[1]
+
+        s3_object = s3.Object(transcript_bucket, transcript_key).get()
+        transcript_json = s3_object['Body'].read().decode('utf-8')
+        return json.loads(transcript_json)
+
+
 
 
 def homogenize_transcription_job_data(transcription_job_data):
@@ -102,25 +131,6 @@ def homogenize_transcription_job_data(transcription_job_data):
                 'status': jd['TranscriptionJobStatus']
             }
             for jd in transcription_job_data]
-
-
-def retrieve_transcript(transcription_job_name):
-    job = tr.get_transcription_job(
-        TranscriptionJobName=transcription_job_name
-    )['TranscriptionJob']
-
-    if not job['TranscriptionJobStatus'] == 'COMPLETED':
-        return
-
-    transcript_file_uri = job['Transcript']['TranscriptFileUri']
-    transcript_path = transcript_file_uri.split("amazonaws.com/", 1)[1]
-
-    transcript_bucket = transcript_path.split('/', 1)[0]
-    transcript_key = transcript_path.split('/', 1)[1]
-
-    s3_object = s3.Object(transcript_bucket, transcript_key).get()
-    transcript_json = s3_object['Body'].read().decode('utf-8')
-    return json.loads(transcript_json)
 
 
 def check_for_credentials():

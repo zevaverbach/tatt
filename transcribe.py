@@ -1,3 +1,4 @@
+import json
 from pprint import pprint
 import sqlite3
 import sys
@@ -5,6 +6,7 @@ import sys
 import click
 
 import config
+import exceptions
 import helpers
 from tatt import vendors
 
@@ -15,16 +17,35 @@ def cli():
 
 
 @cli.command()
-@click.argument('uid', required=False)
-def retrieve(name=None, service=None):
-    pending_jobs = [get_service(service_name).get_pending_jobs(name)
-                    for service_name, data in config.STT_SERVICES
-                    if service is None
-                    or service == service_name]
-    if not pending_jobs:
-        click.ClickException('no pending jobs currently!') 
-    for job in pending_jobs:
-        print(dict(job))
+@click.option('-f', '--file', is_flag=True)
+@click.argument('name')
+def get(name, file):
+    job = helpers.get_transcription_jobs_dict().get(name)
+    if not job:
+        raise click.ClickException(f'no such transcript {name}')
+    if job['status'].lower() != 'completed':
+        raise click.ClickException(f'transcript status is {job["status"]}')
+    service = helpers.get_service(job['service_name'])
+    if not file:
+        pprint(service.retrieve_transcript(name))
+    with open(f'{name}.json', 'w') as fout:
+        fout.write(json.dumps(service.retrieve_transcript(name)))
+
+
+
+@cli.command()
+@click.option('-n', '--name', type=str)
+@click.option('--service', type=str)
+@click.option('--status', type=str)
+def list(name, service, status):
+    if service is not None and service not in config.STT_SERVICES:
+        raise click.ClickException(f'no such service: {service}')
+
+    all_jobs = helpers.get_transcription_jobs(service, name, status)
+    if not all_jobs:
+        click.ClickException('no transcripts currently!') 
+
+    helpers.print_transcription_jobs(all_jobs)
 
 
 @cli.command()
@@ -46,7 +67,7 @@ def this(dry_run, media_filepath, service_name):
         raise click.ClickException(
             f'No such service! {print_all_services(print_=False)}')
 
-    service = get_service(service_name)
+    service = helpers.get_service(service_name)
     s = service(media_filepath)
 
     if dry_run:
@@ -57,13 +78,11 @@ def this(dry_run, media_filepath, service_name):
         print(
           f'Okay, transcribing {media_filepath} using {service_name}...')
 
-        job_num = s.transcribe()
-        db.create_pending_job(job_num, s.basename, service_name)
-        print(f'Okay, job {job_num} is being transcribed.  Use "retrieve" '
+        try:
+            job_num = s.transcribe()
+        except exceptions.AlreadyExistsError as e:
+            raise click.ClickException(str(e))
+        print(f'Okay, job {job_num} is being transcribed.  Use "get" '
                'command to download it.')
-
-
-def get_service(service_name):
-    return getattr(getattr(vendors, service_name), config.SERVICE_CLASS_NAME)
 
 
