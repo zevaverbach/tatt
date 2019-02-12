@@ -1,6 +1,6 @@
 # Transcribe All The Things™
 
-`tatt` creates a uniform API for multiple speech-to-text (STT) services.
+Tatt creates a uniform API for multiple speech-to-text (STT) services.
 
 ## Installation
 
