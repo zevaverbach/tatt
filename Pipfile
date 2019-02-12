@@ -6,11 +6,12 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-requests = "*"
-awscli = "*"
 boto3 = "*"
+awscli = "*"
+pytest = "*"
 click = "*"
 tatt = {editable = true,path = "."}
+ipython = "*"
 
 [requires]
 python_version = "3.7"
