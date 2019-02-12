@@ -1,37 +1,37 @@
-Transcribe All The Things™
+# Transcribe All The Things™
 
 `tatt` creates a uniform API for multiple speech-to-text (STT) services.
 
-# Installation
+## Installation
 
     `pip install git+https://github.com/zevaverbach/tatt`
 
 
-# Usage
+## Usage
 
-## List All Commands
+### List All Commands
     `transcribe --help`
 
-## List All STT Services
+### List All STT Services
     `transcribe services`
 
-## Get Something Transcribed
+### Get Something Transcribed
     `transcribe this <path_to_media_file> <service_name>`
 
-## List Transcripts
+### List Transcripts
     `transcribe list # a full list of all transcripts, completed and in_progress`
     `transcribe list <transcript_basename> # the status of a particular transcript
 
-## Get A Completed Transcript
+### Get A Completed Transcript
     `transcript get <transcript_basename> # prints to stdout`
     `transcript get -f <transcript_basename> # saves to a file in the format <basename>.json`
 
 
-# Services Supported
+## Services Supported
 
   - Amazon Transcribe
 
-## Planned
+### Planned
   - Watson 
   - Google Speech
   - Kaldi and/or things built on it
