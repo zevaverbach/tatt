@@ -6,7 +6,7 @@ with open('README.md') as file:
 
 setup(
     name="tatt",
-    version="0.12",
+    version="0.13",
     py_modules=['tatt'],
     url='https://github.com/zevaverbach/tatt',
     install_requires=[
