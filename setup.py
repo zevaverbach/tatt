@@ -6,8 +6,9 @@ with open('README.md') as file:
 
 setup(
     name="tatt",
-    version="0.1",
+    version="0.12",
     py_modules=['tatt'],
+    url='https://github.com/zevaverbach/tatt',
     install_requires=[
         'Click',
         'awscli',
@@ -18,6 +19,7 @@ setup(
     packages=find_packages(),
     description=('Tatt creates a uniform API for multiple speech-to-text '
                  '(STT) services.'),
+    long_description_content_type='text/markdown',
     long_description=long_description,
     entry_points='''
         [console_scripts]

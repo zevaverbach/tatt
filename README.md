@@ -37,9 +37,9 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
   - [Amazon Transcribe](https://aws.amazon.com/transcribe/)
 
 ### Planned
-  - [ Watson ](https://www.ibm.com/watson/services/speech-to-text/) 
-  - [ Google Speech ](https://cloud.google.com/speech-to-text/)
-  - [ Kaldi ] (https://github.com/kaldi-asr/kaldi) [ and/or things built on it ](https://github.com/lowerquality/gentle)
-  - [ Speechmatics ](https://www.speechmatics.com/)
-  - [ Mozilla's new open-source STT thing ](https://github.com/mozilla/DeepSpeech)
+  - [Watson](https://www.ibm.com/watson/services/speech-to-text/) 
+  - [Google Speech](https://cloud.google.com/speech-to-text/)
+  - [Kaldi](https://github.com/kaldi-asr/kaldi) [ and/or things built on it ](https://github.com/lowerquality/gentle)
+  - [Speechmatics](https://www.speechmatics.com/)
+  - [Mozilla's new open-source STT thing](https://github.com/mozilla/DeepSpeech)
 
