@@ -42,7 +42,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
     Okay, job <job_name> is being transcribed.  Use "get" command to download it.
 
 ### List Transcripts
-    transcribe list # a full list of all transcripts, completed and in_progress
+    transcribe list
 
     Service Job Name                                Status
     ------- --------                                ------
@@ -52,7 +52,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
     amazon  also_done.MP3                           COMPLETED
 
 
-    transcribe list <job_name> # the status of a particular transcript
+    transcribe list <job_name>
 
     Service Job Name                                Status
     ------- --------                                ------
@@ -76,7 +76,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
                             'type': 'pronunciation'},
                            ...
 
-    transcript get -f <job_name> # saves to a file in the format <job_name>.json
+    transcript get -f <job_name>
 
     Okay, downloaded <job_name>.json
 
