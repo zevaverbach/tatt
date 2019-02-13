@@ -17,6 +17,17 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ### List All Commands
     transcribe --help
 
+    Usage: transcribe [OPTIONS] COMMAND [ARGS]...
+
+    Options:
+      --help  Show this message and exit.
+
+    Commands:
+      get       Downloads and/or saves completed transcript.
+      list      Lists available STT services.
+      services  Lists available speech-to-text services.
+      this      Sends a media file to be transcribed.
+
 ### List All STT Services
     transcribe services
 
