@@ -10,8 +10,8 @@ boto3 = "*"
 awscli = "*"
 pytest = "*"
 click = "*"
-tatt = {editable = true,path = "."}
 ipython = "*"
+tatt = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"

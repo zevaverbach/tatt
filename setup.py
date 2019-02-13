@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -11,6 +11,7 @@ setup(
         'boto3',
         'requests',
         ],
+    packages=find_packages(),
     entry_points='''
         [console_scripts]
         transcribe=transcribe:cli

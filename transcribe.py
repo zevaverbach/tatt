@@ -17,9 +17,10 @@ def cli():
 
 
 @cli.command()
-@click.option('-f', '--file', is_flag=True)
+@click.option('-f', '--file', is_flag=True, help='save to file')
 @click.argument('name')
 def get(name, file):
+    """Downloads and/or saves completed transcript."""
     job = helpers.get_transcription_jobs_dict().get(name)
     if not job:
         raise click.ClickException(f'no such transcript {name}')
@@ -30,14 +31,16 @@ def get(name, file):
         pprint(service.retrieve_transcript(name))
     with open(f'{name}.json', 'w') as fout:
         fout.write(json.dumps(service.retrieve_transcript(name)))
+        print(f'Okay, downloaded {name}.json')
 
 
 
 @cli.command()
-@click.option('-n', '--name', type=str)
-@click.option('--service', type=str)
-@click.option('--status', type=str)
+@click.option('-n', '--name', type=str, help="transcription job name")
+@click.option('--service', type=str, help="STT service name")
+@click.option('--status', type=str, help="completed | failed | in_progress")
 def list(name, service, status):
+    """Lists available STT services."""
     if service is not None and service not in config.STT_SERVICES:
         raise click.ClickException(f'no such service: {service}')
 
@@ -49,7 +52,7 @@ def list(name, service, status):
 
 
 @cli.command()
-@click.option('-f', '--free-only', is_flag=True)
+@click.option('-f', '--free-only', is_flag=True, help='only free services')
 def services(free_only):
     """Lists available speech-to-text services."""
     helpers.print_all_services(free_only)
@@ -61,7 +64,7 @@ def services(free_only):
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
 def this(dry_run, media_filepath, service_name):
-    """Transcribe All The Things!™"""
+    """Sends a media file to be transcribed."""
     if service_name not in config.STT_SERVICES:
         print()
         raise click.ClickException(

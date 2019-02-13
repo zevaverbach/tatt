@@ -40,11 +40,11 @@
         },
         "awscli": {
             "hashes": [
-                "sha256:165ebffb2ff10d0a40fdc985f08bc7a93e08ef7a8f8f68d6f76211935806d43f",
-                "sha256:28d457973c97bbe154574ba8902e1c47335a80cfb74836bd49d1e3632104fbda"
+                "sha256:11a18d6f42469366920ad96d483a64804f17ea63e21e5f4a66d8492d7031aa14",
+                "sha256:21ad9141041834dfc135c731d32fdde674642f33d19b21e2ac9c696a8370d717"
             ],
             "index": "pypi",
-            "version": "==1.16.102"
+            "version": "==1.16.103"
         },
         "backcall": {
             "hashes": [
@@ -55,18 +55,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:2bcda6aa7cbc51a30fc49f9129500c4df8b92fee3b4a44562c9d595bf32c4dcd",
-                "sha256:609900ca26f379123911b51ced68e437322ff3c347deaac7d84a53710d612c2c"
+                "sha256:0bed0db8c10b88b3daa042adaa1fb6c3262caed39d28086e8548015405c71744",
+                "sha256:70e71e0192a68f65754ab9d2a335be3c6856a1e8a15f3bd6263ea12e2f442bc7"
             ],
             "index": "pypi",
-            "version": "==1.9.92"
+            "version": "==1.9.93"
         },
         "botocore": {
             "hashes": [
-                "sha256:19a48491bb0f22ea95f26ed3bd9ca9e0cd35aadf04027774995817d6403abec9",
-                "sha256:97a43a70876dae5ebe4334db8ea846181467b80adc45f681720c9bb859491bf5"
+                "sha256:4df39ef9bcd7766e3a71a9e7f976ca6c9e926f451914a9c073aa50e9519436ca",
+                "sha256:d3cea95919892eac30e2ff8c5a8908022d5a93f917df3cff4ed06a6926dcc0e5"
             ],
-            "version": "==1.12.92"
+            "version": "==1.12.93"
         },
         "certifi": {
             "hashes": [
@@ -157,10 +157,10 @@
         },
         "parso": {
             "hashes": [
-                "sha256:6ecf7244be8e7283ec9009c72d074830e7e0e611c974f813d76db0390a4e0dd6",
-                "sha256:8162be7570ffb34ec0b8d215d7f3b6c5fab24f51eb3886d6dee362de96b6db94"
+                "sha256:4580328ae3f548b358f4901e38c0578229186835f0fa0846e47369796dd5bcc9",
+                "sha256:68406ebd7eafe17f8e40e15a84b56848eccbf27d7c1feb89e93d8fca395706db"
             ],
-            "version": "==0.3.3"
+            "version": "==0.3.4"
         },
         "pexpect": {
             "hashes": [
