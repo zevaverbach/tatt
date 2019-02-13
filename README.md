@@ -31,7 +31,6 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ### List All STT Services
     transcribe services
 
-
     Here are all the available speech-to-text services:
 
       amazon		(60 minutes per month for the first 12 months)
@@ -39,8 +38,8 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ### Get Something Transcribed
     transcribe this <path_to_media_file> <service_name>
 
-    Okay, transcribing /Users/zev/d/<path_to_media_file> using <service_name>...
-    Okay, job <path_to_media_file> is being transcribed.  Use "get" command to download it.
+    Okay, transcribing /Users/zev/d/<job_name> using <service_name>...
+    Okay, job <job_name> is being transcribed.  Use "get" command to download it.
 
 ### List Transcripts
     transcribe list # a full list of all transcripts, completed and in_progress
