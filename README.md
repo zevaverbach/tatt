@@ -15,7 +15,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ## Usage
 
 ### List All Commands
-    transcribe --help
+    $ transcribe --help
 
     Usage: transcribe [OPTIONS] COMMAND [ARGS]...
 
@@ -29,20 +29,20 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
       this      Sends a media file to be transcribed.
 
 ### List All STT Services
-    transcribe services
+    $ transcribe services
 
     Here are all the available speech-to-text services:
 
       amazon		(60 minutes per month for the first 12 months)
 
 ### Get Something Transcribed
-    transcribe this <path_to_media_file> <service_name>
+    $ transcribe this <path_to_media_file> <service_name>
 
     Okay, transcribing <path_to_media_file> using <service_name>...
     Okay, job <job_name> is being transcribed.  Use "get" command to download it.
 
 ### List Transcripts
-    transcribe list
+    $ transcribe list
 
     Service Job Name                                Status
     ------- --------                                ------
@@ -52,7 +52,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
     amazon  also_done.MP3                           COMPLETED
 
 
-    transcribe list <job_name>
+    $ transcribe list <job_name>
 
     Service Job Name                                Status
     ------- --------                                ------
@@ -60,7 +60,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 
 
 ### Get A Completed Transcript
-    transcript get <job_name> # prints to stdout
+    $ transcript get <job_name> # prints to stdout
 
     {'accountId': '416321668733',
      'jobName': 'a1bace5e-8b08-4ce4-b08c-834a23aafcf1',
@@ -76,7 +76,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
                             'type': 'pronunciation'},
                            ...
 
-    transcript get -f <job_name>
+    $ transcript get -f <job_name>
 
     Okay, downloaded <job_name>.json
 
