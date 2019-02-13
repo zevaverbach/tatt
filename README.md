@@ -38,7 +38,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ### Get Something Transcribed
     transcribe this <path_to_media_file> <service_name>
 
-    Okay, transcribing /Users/zev/d/<job_name> using <service_name>...
+    Okay, transcribing <path_to_media_file> using <service_name>...
     Okay, job <job_name> is being transcribed.  Use "get" command to download it.
 
 ### List Transcripts
