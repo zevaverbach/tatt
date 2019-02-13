@@ -11,6 +11,7 @@ setup(
         'boto3',
         'requests',
         ],
+    dependency_links=['https://github.com/zevaverbach/tatt#egg=package-0.1'],
     packages=find_packages(),
     entry_points='''
         [console_scripts]
