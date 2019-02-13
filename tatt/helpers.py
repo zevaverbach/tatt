@@ -5,7 +5,7 @@ from tatt import vendors
 def print_all_services(free_only=False, print_=True):
     # TODO: make a jinja template for this
     all_services_string = (
-         '\n\nHere are all the available ' +
+         '\nHere are all the available ' +
          f'{"free " if free_only else ""}speech-to-text services:' +
         '\n\n' +
         '\n'.join(['{}{}{}{}'.format('\t', service_name, '\t\t',
@@ -56,9 +56,10 @@ def get_transcription_jobs(service_name=None, name=None, status=None):
     all_jobs = {}
     for stt_name, data in config.STT_SERVICES.items():
         if service_name is None or service_name == stt_name:
-            jobs = get_service(stt_name).get_transcription_jobs(
-                                                             job_name_query=name,
-                                                             status=status)
+            service = get_service(stt_name)
+            service._setup() # check for AWS credentials and create buckets
+            jobs = service.get_transcription_jobs(job_name_query=name,
+                                                  status=status)
             if jobs:
                 all_jobs[stt_name] = jobs
     return all_jobs

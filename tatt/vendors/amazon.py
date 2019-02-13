@@ -30,19 +30,21 @@ class transcribe:
                 f"https://s3-{config.AWS_REGION}.amazonaws.com/"
                 f"{self.bucket_names['media']}/{self.basename}")
 
-    def _setup(self):
+    @staticmethod
+    def _setup():
         if not check_for_credentials():
-            make_credentials()
-            if not check_for_credentials():
-                raise ConfigError
+            raise exceptions.ConfigError('please run "aws configure" first')
+        self = transcribe
         for bucket_name in self.bucket_names.values():
             if not self.check_for_bucket(bucket_name):
                 self.make_bucket(bucket_name)
 
-    def check_for_bucket(self, bucket_name):
+    @staticmethod
+    def check_for_bucket(bucket_name):
         return bool(s3.Bucket(bucket_name).creation_date)
 
-    def make_bucket(self, bucket_name):
+    @staticmethod
+    def make_bucket(bucket_name):
         s3.create_bucket(Bucket=bucket_name)
 
     def transcribe(self):
@@ -135,10 +137,6 @@ def homogenize_transcription_job_data(transcription_job_data):
 
 def check_for_credentials():
     return config.AWS_CREDENTIALS_FILEPATH.exists()
-
-
-def make_credentials():
-    shell_call('aws configure')
 
 
 def shell_call(command):

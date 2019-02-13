@@ -6,4 +6,3 @@ class ConfigError(Exception):
 class AlreadyExistsError(Exception):
     pass
 
-

@@ -29,9 +29,10 @@ def get(name, file):
     service = helpers.get_service(job['service_name'])
     if not file:
         pprint(service.retrieve_transcript(name))
-    with open(f'{name}.json', 'w') as fout:
-        fout.write(json.dumps(service.retrieve_transcript(name)))
-        print(f'Okay, downloaded {name}.json')
+    else:
+        with open(f'{name}.json', 'w') as fout:
+            fout.write(json.dumps(service.retrieve_transcript(name)))
+            print(f'Okay, downloaded {name}.json')
 
 
 
@@ -44,11 +45,15 @@ def list(name, service, status):
     if service is not None and service not in config.STT_SERVICES:
         raise click.ClickException(f'no such service: {service}')
 
-    all_jobs = helpers.get_transcription_jobs(service, name, status)
-    if not all_jobs:
-        click.ClickException('no transcripts currently!') 
+    try:
+        all_jobs = helpers.get_transcription_jobs(service, name, status)
+    except exceptions.ConfigError as e:
+        raise click.ClickException(str(e))
+    else:
+        if not all_jobs:
+            raise click.ClickException('no transcripts currently!') 
 
-    helpers.print_transcription_jobs(all_jobs)
+        helpers.print_transcription_jobs(all_jobs)
 
 
 @cli.command()
