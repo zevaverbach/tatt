@@ -6,8 +6,8 @@ import uuid
 
 import boto3
 
-import config
-import exceptions
+from tatt import config
+from tatt import exceptions
 
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)

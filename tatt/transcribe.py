@@ -5,9 +5,9 @@ import sys
 
 import click
 
-import config
-import exceptions
-import helpers
+from tatt import config
+from tatt import exceptions
+from tatt import helpers
 from tatt import vendors
 
 
@@ -87,5 +87,3 @@ def this(dry_run, media_filepath, service_name):
             raise click.ClickException(str(e))
         print(f'Okay, job {job_num} is being transcribed.  Use "get" '
                'command to download it.')
-
-

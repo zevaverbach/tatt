@@ -11,10 +11,10 @@ setup(
         'boto3',
         'requests',
         ],
-    dependency_links=['https://github.com/zevaverbach/tatt#egg=package-0.1'],
-    packages=find_packages(),
+    # dependency_links=['https://github.com/zevaverbach/tatt#egg=package-0.1'],
+    packages=['tatt'],
     entry_points='''
         [console_scripts]
-        transcribe=transcribe:cli
+        transcribe=tatt.transcribe:cli
     ''',
         )

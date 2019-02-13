@@ -1,6 +1,5 @@
-import config
-
-import vendors
+from tatt import config
+from tatt import vendors
 
 
 def print_all_services(free_only=False, print_=True):
