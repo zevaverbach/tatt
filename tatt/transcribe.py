@@ -60,7 +60,7 @@ def list(name, service, status):
 @click.option('-f', '--free-only', is_flag=True, help='only free services')
 def services(free_only):
     """Lists available speech-to-text services."""
-    helpers.print_all_services(free_only)
+    click.echo(helpers.make_string_all_services(free_only))
 
 
 @cli.command()
