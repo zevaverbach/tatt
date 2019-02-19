@@ -15,8 +15,7 @@ def make_string_all_services(free_only=False):
                                       )
 
                      for service_name, info in
-                     config.STT_SERVICES.items()])
-          '\n'
+                     config.STT_SERVICES.items()]) + '\n'
     )
     return all_services_string
 
