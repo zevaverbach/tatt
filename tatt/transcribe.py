@@ -5,10 +5,7 @@ import sys
 
 import click
 
-from tatt import config
-from tatt import exceptions
-from tatt import helpers
-from tatt import vendors
+from tatt import config, exceptions, helpers, vendors
 
 
 @click.group()
