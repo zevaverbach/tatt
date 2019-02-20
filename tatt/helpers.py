@@ -7,13 +7,13 @@ TAB = '\t'
 
 def make_string_all_services(free_only=False):
     all_services_string_formatter = (
-        "Here are all the available {}speech-to-text-services:\n\n"
+        "\nHere are all the available {}speech-to-text-services:\n\n"
         )
 
+    format_fill = ""
     if free_only:
-        all_services_string = all_services_string_formatter.format("free ")
-    else:
-        all_services_string = all_services_string_formatter.format("")
+        format_fill = "free "
+    all_services_string = all_services_string_formatter.format(format_fill)
 
     for service_name, module in vendors.STT_SERVICES.items():
         if free_only and module.cost_per_15_seconds > 0:
@@ -22,7 +22,7 @@ def make_string_all_services(free_only=False):
    f'{TAB}{service_name}{TAB}{TAB}${module.cost_per_15_seconds} per 15 seconds'
         )
 
-    return all_services_string
+    return all_services_string + '\n'
 
 
 def get_service(service_name):
