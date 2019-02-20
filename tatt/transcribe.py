@@ -27,7 +27,7 @@ def get(name, save):
 
     filepath = None
     if save:
-        filepath = f'{name}.json', 'w'
+        filepath = f'{name}.json'
 
     click.echo(transcript, file=filepath)
 
