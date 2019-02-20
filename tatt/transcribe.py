@@ -25,12 +25,11 @@ def get(name, save):
     except exceptions.NotAvailable as e:
         raise click.ClickException(str(e))
 
-    if not save:
-        click.echo(transcript)
-    else:
-        with open(f'{name}.json', 'w') as fout:
-            fout.write(transcript)
-        click.echo(f'Okay, downloaded {name}.json')
+    filepath = None
+    if save:
+        filepath = f'{name}.json', 'w'
+
+    click.echo(transcript, file=filepath)
 
 
 
