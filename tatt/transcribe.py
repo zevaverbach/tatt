@@ -74,7 +74,7 @@ def status(job_name):
     jobs = helpers.get_transcription_jobs(name=job_name)
     if not jobs:
         raise click.ClickException('no job by that name')
-    click.echo(jobs[0]['status'])
+    click.echo(list(jobs.values())[0][0]['status'])
 
 
 @cli.command()
