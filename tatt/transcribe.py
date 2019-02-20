@@ -15,11 +15,14 @@ def cli():
 
 @cli.command()
 @click.option('-s', '--save', is_flag=True, help='save to file')
+@click.option('-p', '--pretty', is_flag=True, 
+              help='pretty print, will make output non-pipeable')
 @click.argument('name')
 def get(name, save):
     """Downloads and/or saves completed transcript."""
     try:
-        transcript = json.dumps(helpers.get_transcript(name), indent=4)
+        transcript = json.dumps(helpers.get_transcript(name), 
+                                indent=4 if pretty else None)
     except exceptions.DoesntExistError:
         raise click.ClickException(f'no such transcript {name}')
     except exceptions.NotAvailable as e:
