@@ -18,7 +18,7 @@ def cli():
 @click.option('-p', '--pretty', is_flag=True, 
               help='pretty print, will make output non-pipeable')
 @click.argument('name')
-def get(name, save):
+def get(name, save, pretty):
     """Downloads and/or saves completed transcript."""
     try:
         transcript = json.dumps(helpers.get_transcript(name), 
@@ -69,9 +69,18 @@ def services(free_only):
 
 
 @cli.command()
+@click.argument('job_name', type=str)
+def status(job_name):
+    jobs = helpers.get_transcription_jobs(name=job_name)
+    if not jobs:
+        raise click.ClickException('no job by that name')
+    click.echo(jobs[0]['status'])
+
+
+@cli.command()
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
-def this(dry_run, media_filepath, service_name):
+def this(media_filepath, service_name):
     """Sends a media file to be transcribed."""
     try:
         service = helpers.get_service(service_name)
