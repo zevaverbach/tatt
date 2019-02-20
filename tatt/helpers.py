@@ -25,17 +25,18 @@ def make_string_all_services(free_only=False):
 
 
 def get_job(job_name):
-    job = helpers.get_transcription_jobs_dict().get(name)
+    job = get_transcription_jobs_dict().get(job_name)
     if not job:
         raise exceptions.DoesntExistError
     if job['status'].lower() != 'completed':
         raise exceptions.NotAvailable(f'transcript status is {job["status"]}')
+    return job
 
 
 def get_transcript(job_name):
     job = get_job(job_name)
     service = get_service(job['service_name'])
-    return service.retrieve_transcript(name)
+    return service.retrieve_transcript(job_name)
 
 
 def get_service(service_name):

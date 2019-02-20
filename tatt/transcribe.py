@@ -19,14 +19,14 @@ def cli():
 def get(name, save):
     """Downloads and/or saves completed transcript."""
     try:
-        transcript = get_transcript(name)
+        transcript = helpers.get_transcript(name)
     except exceptions.DoesntExistError:
         raise click.ClickException(f'no such transcript {name}')
     except exceptions.NotAvailable as e:
         raise click.ClickException(str(e))
 
     if not save:
-        click.echo(transcript)
+        pprint(transcript)
     else:
         with open(f'{name}.json', 'w') as fout:
             fout.write(json.dumps(transcript))
