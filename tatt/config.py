@@ -13,9 +13,9 @@ STT_SERVICES = {
 
 AWS_BUCKET_NAME_FMTR_MEDIA = 'tatt-media-{}'
 AWS_BUCKET_NAME_FMTR_TRANSCRIPT = 'tatt-transcript-{}'
-AWS_CREDENTIALS_FILEPATH = (
-    os.getenv('AWS_CREDENTIALS_FILEPATH') 
-    or Path.home() / '.aws/credentials'
+AWS_CONFIG_FILEPATH = (
+    os.getenv('AWS_CONFIG_FILEPATH') 
+    or Path.home() / '.aws/config'
 )
 AWS_REGION = 'us-east-1'
 

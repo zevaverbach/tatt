@@ -12,8 +12,9 @@ from tatt import exceptions
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)
 BUCKET_NAME_TRANSCRIPT = config.AWS_BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
-tr = boto3.client('transcribe')
-s3 = boto3.resource('s3')
+if check_for_config():
+    tr = boto3.client('transcribe')
+    s3 = boto3.resource('s3')
 
 
 class transcribe:
@@ -30,14 +31,13 @@ class transcribe:
                 f"https://s3-{config.AWS_REGION}.amazonaws.com/"
                 f"{self.bucket_names['media']}/{self.basename}")
 
-    @staticmethod
-    def _setup():
-        if not check_for_credentials():
+    @classmethod
+    def _setup(cls):
+        if not check_for_config():
             raise exceptions.ConfigError('please run "aws configure" first')
-        self = transcribe
-        for bucket_name in self.bucket_names.values():
-            if not self.check_for_bucket(bucket_name):
-                self.make_bucket(bucket_name)
+        for bucket_name in cls.bucket_names.values():
+            if not cls.check_for_bucket(bucket_name):
+                cls.make_bucket(bucket_name)
 
     @staticmethod
     def check_for_bucket(bucket_name):
@@ -73,21 +73,21 @@ class transcribe:
                 )
         return job_name
 
-    @staticmethod
-    def get_completed_jobs(job_name_query=None):
-        return transcribe.get_transcription_jobs(
+    @classmethod
+    def get_completed_jobs(cls, job_name_query=None):
+        return cls.get_transcription_jobs(
                 status='completed',
                 job_name_query=job_name_query)
 
-    @staticmethod
-    def get_pending_jobs(job_name_query=None):
-        return transcribe.get_transcription_jobs(
+    @classmethod
+    def get_pending_jobs(cls, job_name_query=None):
+        return cls.get_transcription_jobs(
                 status='in_progress',
                 job_name_query=job_name_query)
 
-    @staticmethod
-    def get_all_jobs(job_name_query=None):
-        return transcribe.get_transcription_jobs(job_name_query)
+    @classmethod
+    def get_all_jobs(cls, job_name_query=None):
+        return cls.get_transcription_jobs(job_name_query)
 
     @staticmethod
     def get_transcription_jobs(status=None, job_name_query=None):
@@ -135,8 +135,8 @@ def homogenize_transcription_job_data(transcription_job_data):
             for jd in transcription_job_data]
 
 
-def check_for_credentials():
-    return config.AWS_CREDENTIALS_FILEPATH.exists()
+def check_for_config():
+    return config.AWS_CONFIG_FILEPATH.exists()
 
 
 def shell_call(command):

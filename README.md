@@ -2,6 +2,8 @@
 
 Tatt creates a uniform API for multiple speech-to-text (STT) services.
 
+![demo](demo.gif)
+
 ## Installation
 
     pip install tatt

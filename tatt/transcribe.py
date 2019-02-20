@@ -73,7 +73,10 @@ def this(dry_run, media_filepath, service_name):
             f'No such service! {print_all_services(print_=False)}')
 
     service = helpers.get_service(service_name)
-    s = service(media_filepath)
+    try:
+        s = service(media_filepath)
+    except exceptions.ConfigError as e:
+        raise click.ClickException(str(e))
 
     if dry_run:
         print('If this weren\'t a dry run, I would transcribe '
