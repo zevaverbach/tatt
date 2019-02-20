@@ -14,22 +14,23 @@ def cli():
 
 
 @cli.command()
-@click.option('-f', '--file', is_flag=True, help='save to file')
+@click.option('-s', '--save', is_flag=True, help='save to file')
 @click.argument('name')
-def get(name, file):
+def get(name, save):
     """Downloads and/or saves completed transcript."""
-    job = helpers.get_transcription_jobs_dict().get(name)
-    if not job:
+    try:
+        transcript = get_transcript(name)
+    except exceptions.DoesntExistError:
         raise click.ClickException(f'no such transcript {name}')
-    if job['status'].lower() != 'completed':
-        raise click.ClickException(f'transcript status is {job["status"]}')
-    service = helpers.get_service(job['service_name'])
-    if not file:
-        pprint(service.retrieve_transcript(name))
+    except exceptions.NotAvailable as e:
+        raise click.ClickException(str(e))
+
+    if not save:
+        click.echo(transcript)
     else:
         with open(f'{name}.json', 'w') as fout:
-            fout.write(json.dumps(service.retrieve_transcript(name)))
-            print(f'Okay, downloaded {name}.json')
+            fout.write(json.dumps(transcript))
+        click.echo(f'Okay, downloaded {name}.json')
 
 
 
@@ -61,34 +62,27 @@ def services(free_only):
 
 
 @cli.command()
-@click.option('-d', '--dry-run', is_flag=True, help=(
-  'Do a dry run without actually submitting the media file for transcription'))
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
 def this(dry_run, media_filepath, service_name):
     """Sends a media file to be transcribed."""
-    if service_name not in vendors.SERVICES:
-        print()
+    try:
+        service = helpers.get_service(service_name)
+    except KeyError as e:
         raise click.ClickException(
             f'No such service! {print_all_services(print_=False)}')
 
-    service = helpers.get_service(service_name)
     try:
         s = service(media_filepath)
     except exceptions.ConfigError as e:
         raise click.ClickException(str(e))
 
-    if dry_run:
-        print('If this weren\'t a dry run, I would transcribe '
-             f'{media_filepath} using {service_name}')
-        pprint(vars(s))
-    else:
-        print(
-          f'Okay, transcribing {media_filepath} using {service_name}...')
+    click.echo(
+      f'Okay, transcribing {media_filepath} using {service_name}...')
 
-        try:
-            job_num = s.transcribe()
-        except exceptions.AlreadyExistsError as e:
-            raise click.ClickException(str(e))
-        print(f'Okay, job {job_num} is being transcribed.  Use "get" '
-               'command to download it.')
+    try:
+        job_num = s.transcribe()
+    except exceptions.AlreadyExistsError as e:
+        raise click.ClickException(str(e))
+    click.echo(f'Okay, job {job_num} is being transcribed.  Use "get" '
+           'command to download it.')

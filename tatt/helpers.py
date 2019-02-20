@@ -1,5 +1,4 @@
-from tatt import config
-from tatt import vendors
+from tatt import config, exceptions, vendors
 
 LB = '\n'
 TAB = '\t'
@@ -23,6 +22,20 @@ def make_string_all_services(free_only=False):
         )
 
     return all_services_string + '\n'
+
+
+def get_job(job_name):
+    job = helpers.get_transcription_jobs_dict().get(name)
+    if not job:
+        raise exceptions.DoesntExistError
+    if job['status'].lower() != 'completed':
+        raise exceptions.NotAvailable(f'transcript status is {job["status"]}')
+
+
+def get_transcript(job_name):
+    job = get_job(job_name)
+    service = get_service(job['service_name'])
+    return service.retrieve_transcript(name)
 
 
 def get_service(service_name):
