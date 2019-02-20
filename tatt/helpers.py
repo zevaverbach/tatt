@@ -1,27 +1,33 @@
 from tatt import config
 from tatt import vendors
 
+LB = '\n'
+TAB = '\t'
+
 
 def make_string_all_services(free_only=False):
-    all_services_string = (
-          '\nHere are all the available '
-         f'{"free " if free_only else ""}speech-to-text services:'
-          '\n\n'
-          '\n'.join(['{}{}{}{}'.format('\t', service_name, '\t\t',
+    all_services_string_formatter = (
+        "Here are all the available {}speech-to-text-services:\n\n"
+        )
 
-                       f'({info["free"].replace("_", " ")})' 
-                       if isinstance(info["free"], str) else ""
-                       
-                                      )
+    if free_only:
+        all_services_string = all_services_string_formatter.format("free ")
+    else:
+        all_services_string = all_services_string_formatter.format("")
 
-                     for service_name, info in
-                     config.STT_SERVICES.items()]) + '\n'
-    )
+    for service_name, module in vendors.STT_SERVICES.items():
+        if free_only and module.cost_per_15_seconds > 0:
+            continue
+        all_services_string += (
+   f'{TAB}{service_name}{TAB}{TAB}${module.cost_per_15_seconds} per 15 seconds'
+        )
+
     return all_services_string
 
 
 def get_service(service_name):
-    return getattr(getattr(vendors, service_name), config.SERVICE_CLASS_NAME)
+    module = vendors.STT_SERVICES[service_name]
+    return getattr(module, config.SERVICE_CLASS_NAME)
 
 
 def print_transcription_jobs(jobs):
@@ -49,7 +55,7 @@ def print_transcription_jobs(jobs):
 
 def get_transcription_jobs(service_name=None, name=None, status=None):
     all_jobs = {}
-    for stt_name, data in config.STT_SERVICES.items():
+    for stt_name in vendors.STT_SERVICES:
         if service_name is None or service_name == stt_name:
             service = get_service(stt_name)
             service._setup() # check for AWS credentials and create buckets

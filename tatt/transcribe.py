@@ -39,7 +39,7 @@ def get(name, file):
 @click.option('--status', type=str, help="completed | failed | in_progress")
 def list(name, service, status):
     """Lists available STT services."""
-    if service is not None and service not in config.STT_SERVICES:
+    if service is not None and service not in vendors.STT_SERVICES:
         raise click.ClickException(f'no such service: {service}')
 
     try:
@@ -67,7 +67,7 @@ def services(free_only):
 @click.argument('service_name', type=str)
 def this(dry_run, media_filepath, service_name):
     """Sends a media file to be transcribed."""
-    if service_name not in config.STT_SERVICES:
+    if service_name not in vendors.STT_SERVICES:
         print()
         raise click.ClickException(
             f'No such service! {print_all_services(print_=False)}')

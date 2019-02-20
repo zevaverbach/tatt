@@ -12,6 +12,7 @@ from tatt import exceptions
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)
 BUCKET_NAME_TRANSCRIPT = config.AWS_BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
+cost_per_15_seconds = .024 / 4
 
 
 def check_for_config():
@@ -30,7 +31,6 @@ class Transcriber:
 
     bucket_names = {'media': BUCKET_NAME_MEDIA,
                     'transcript': BUCKET_NAME_TRANSCRIPT}
-    service_name = 'amazon'
 
     def __init__(self, filepath):
         self._setup()
@@ -62,7 +62,7 @@ class Transcriber:
             return self._request_transcription()
         except tr.exceptions.ConflictException:
             raise exceptions.AlreadyExistsError(
-                f'{self.basename} already exists on {self.service_name}')
+                f'{self.basename} already exists on {NAME}')
 
     def _upload_file(self):
         s3.Bucket(self.bucket_names['media']).upload_file(
