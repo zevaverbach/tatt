@@ -1,13 +1,12 @@
 # Transcribe All The Things™
 
-Tatt creates a uniform API for multiple speech-to-text (STT) services.
+tatt is a CLI for creating and managing speech-to-text transcripts.
 
 ![demo](demo.gif)
 
 ## Installation
 
     pip install tatt
-
 
 ## Dependencies
 
