@@ -12,12 +12,21 @@ from tatt import exceptions
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)
 BUCKET_NAME_TRANSCRIPT = config.AWS_BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
+
+
+def check_for_config():
+    return (
+        config.AWS_CONFIG_FILEPATH.exists()
+        and config.AWS_CREDENTIALS_FILEPATH.exists()
+        )
+
+
 if check_for_config():
     tr = boto3.client('transcribe')
     s3 = boto3.resource('s3')
 
 
-class transcribe:
+class Transcriber:
 
     bucket_names = {'media': BUCKET_NAME_MEDIA,
                     'transcript': BUCKET_NAME_TRANSCRIPT}
@@ -133,10 +142,6 @@ def homogenize_transcription_job_data(transcription_job_data):
                 'status': jd['TranscriptionJobStatus']
             }
             for jd in transcription_job_data]
-
-
-def check_for_config():
-    return config.AWS_CONFIG_FILEPATH.exists()
 
 
 def shell_call(command):
