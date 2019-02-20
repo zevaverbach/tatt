@@ -15,7 +15,7 @@ def make_string_all_services(free_only=False):
         format_fill = "free "
     all_services_string = all_services_string_formatter.format(format_fill)
 
-    for service_name, module in vendors.STT_SERVICES.items():
+    for service_name, module in vendors.SERVICES.items():
         if free_only and module.cost_per_15_seconds > 0:
             continue
         all_services_string += (
@@ -26,7 +26,7 @@ def make_string_all_services(free_only=False):
 
 
 def get_service(service_name):
-    module = vendors.STT_SERVICES[service_name]
+    module = vendors.SERVICES[service_name]
     return getattr(module, config.SERVICE_CLASS_NAME)
 
 
@@ -55,7 +55,7 @@ def print_transcription_jobs(jobs):
 
 def get_transcription_jobs(service_name=None, name=None, status=None):
     all_jobs = {}
-    for stt_name in vendors.STT_SERVICES:
+    for stt_name in vendors.SERVICES:
         if service_name is None or service_name == stt_name:
             service = get_service(stt_name)
             service._setup() # check for AWS credentials and create buckets

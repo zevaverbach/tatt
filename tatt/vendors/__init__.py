@@ -1,5 +1,5 @@
 from tatt.vendors import amazon
 
-STT_SERVICES = {
+SERVICES = {
         'amazon': amazon,
         }
