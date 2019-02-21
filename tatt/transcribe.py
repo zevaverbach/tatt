@@ -31,7 +31,7 @@ def get(name, save, pretty):
 
     file = None
     if save:
-        filepath = f'{name}.json', 'w'
+        filepath = f'{name}.json'
         file = open(filepath)
 
     click.echo(transcript, file=file)
@@ -72,10 +72,15 @@ def services(free_only):
 @cli.command()
 @click.argument('job_name', type=str)
 def status(job_name):
-    jobs = get_transcription_jobs(name=job_name)
-    if not jobs or not list(jobs.values())[0]:
+    """Check the status of a transcription job."""
+    try:
+        jobs = get_transcription_jobs(name=job_name)
+    except exceptions.DoesntExistError:
         raise click.ClickException('no job by that name')
-    click.echo(list(jobs.values())[0][0]['status'])
+    for job_list in jobs.values():
+        for job in job_list:
+            click.echo(job['status'])
+            break
 
 
 @cli.command()

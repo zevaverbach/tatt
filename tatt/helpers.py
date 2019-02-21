@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from tatt import config, exceptions, vendors
 
 LB = '\n'
@@ -67,7 +69,11 @@ def print_transcription_jobs(jobs):
     print()
 
 
-def get_transcription_jobs(service_name=None, name=None, status=None):
+def get_transcription_jobs(
+        service_name=None, 
+        name=None, 
+        status=None
+        ) -> Dict[str, List[dict]]:
     all_jobs = {}
     for stt_name in vendors.SERVICES:
         if service_name is None or service_name == stt_name:
@@ -77,6 +83,10 @@ def get_transcription_jobs(service_name=None, name=None, status=None):
                                                   status=status)
             if jobs:
                 all_jobs[stt_name] = jobs
+
+    if name and len(all_jobs) == 0:
+        raise exceptions.DoesntExistError
+
     return all_jobs
 
 
