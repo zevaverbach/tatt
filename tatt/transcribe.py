@@ -6,6 +6,7 @@ import sys
 import click
 
 from tatt import config, exceptions, helpers, vendors
+from tatt.helpers import get_transcription_jobs, get_service
 
 
 @click.group()
@@ -42,16 +43,16 @@ def get(name, save, pretty):
 
 
 @cli.command()
-@click.option('-n', '--name', type=str, help="transcription job name")
 @click.option('--service', type=str, help="STT service name")
+@click.option('-n', '--name', type=str, help="transcription job name")
 @click.option('--status', type=str, help="completed | failed | in_progress")
-def list(name, service, status):
+def list(service, name, status):
     """Lists available STT services."""
     if service is not None and service not in vendors.SERVICES:
         raise click.ClickException(f'no such service: {service}')
 
     try:
-        all_jobs = helpers.get_transcription_jobs(service, name, status)
+        all_jobs = get_transcription_jobs(service, name, status)
     except exceptions.ConfigError as e:
         raise click.ClickException(str(e))
     else:
@@ -71,8 +72,8 @@ def services(free_only):
 @cli.command()
 @click.argument('job_name', type=str)
 def status(job_name):
-    jobs = helpers.get_transcription_jobs(name=job_name)
-    if not jobs:
+    jobs = get_transcription_jobs(name=job_name)
+    if not jobs or not list(jobs.values())[0]:
         raise click.ClickException('no job by that name')
     click.echo(list(jobs.values())[0][0]['status'])
 
@@ -83,7 +84,7 @@ def status(job_name):
 def this(media_filepath, service_name):
     """Sends a media file to be transcribed."""
     try:
-        service = helpers.get_service(service_name)
+        service = get_service(service_name)
     except KeyError as e:
         raise click.ClickException(
             f'No such service! {print_all_services(print_=False)}')

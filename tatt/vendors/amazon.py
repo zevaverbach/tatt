@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import PurePath
 from subprocess import check_output
+from typing import List, Dict, Union
 import uuid
 
 import boto3
@@ -82,35 +83,29 @@ class Transcriber:
                 )
         return job_name
 
-    @classmethod
-    def get_completed_jobs(cls, job_name_query=None):
-        return cls.get_transcription_jobs(
-                status='completed',
-                job_name_query=job_name_query)
-
-    @classmethod
-    def get_pending_jobs(cls, job_name_query=None):
-        return cls.get_transcription_jobs(
-                status='in_progress',
-                job_name_query=job_name_query)
-
-    @classmethod
-    def get_all_jobs(cls, job_name_query=None):
-        return cls.get_transcription_jobs(job_name_query)
-
     @staticmethod
-    def get_transcription_jobs(status=None, job_name_query=None):
+    def get_transcription_jobs(
+            status=None, 
+            job_name_query=None
+            ) -> List[dict]:
+
         kwargs = {'MaxResults': 100}
+
         if status is not None:
             kwargs['Status'] = status.upper()
         if job_name_query is not None:
             kwargs['JobNameContains'] = job_name_query
+
         jobs_data = tr.list_transcription_jobs(**kwargs)
-        jobs = homogenize_transcription_job_data(jobs_data['TranscriptionJobSummaries'])
+        key = 'TranscriptionJobSummaries'
+
+        jobs = homogenize_transcription_job_data(jobs_data[key])
+
         while jobs_data.get('NextToken'):
-            jobs_data = tr.list_transcription_jobs(NextToken=jobs_data['NextToken'])
-            jobs += homogenize_transcription_job_data(
-                        jobs_data['TranscriptionJobSummaries'])
+            token = jobs_data['NextToken']
+            jobs_data = tr.list_transcription_jobs(NextToken=token)
+            jobs += homogenize_transcription_job_data(jobs_data[key])
+
         return jobs
 
     @staticmethod
@@ -142,7 +137,3 @@ def homogenize_transcription_job_data(transcription_job_data):
                 'status': jd['TranscriptionJobStatus']
             }
             for jd in transcription_job_data]
-
-
-def shell_call(command):
-    return check_output(command, shell=True)
