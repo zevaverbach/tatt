@@ -32,7 +32,7 @@ def get(name, save, pretty):
     file = None
     if save:
         filepath = f'{name}.json'
-        file = open(filepath)
+        file = open(filepath, 'w')
 
     click.echo(transcript, file=file)
 
