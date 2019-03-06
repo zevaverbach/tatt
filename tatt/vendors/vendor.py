@@ -2,6 +2,8 @@ import abc
 import os
 from pathlib import PurePath
 
+from tatt import exceptions
+
 
 class TranscriberBaseClass:
 
@@ -19,6 +21,12 @@ class TranscriberBaseClass:
         This must be defined as a class attribute, to be printed when raising
         such an error.
         """
+        pass
+
+    @property
+    @abc.abstractmethod
+    def cost_per_15_seconds(self):
+        """This must be defined as a class attribute."""
         pass
 
     @classmethod

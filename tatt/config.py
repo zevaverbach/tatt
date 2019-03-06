@@ -3,8 +3,8 @@ from pathlib import Path
 import sqlite3
 
 
-AWS_BUCKET_NAME_FMTR_MEDIA = 'tatt-media-{}'
-AWS_BUCKET_NAME_FMTR_TRANSCRIPT = 'tatt-transcript-{}'
+BUCKET_NAME_FMTR_MEDIA = 'tatt-media-{}'
+BUCKET_NAME_FMTR_TRANSCRIPT = 'tatt-transcript-{}'
 
 if os.getenv('AWS_CONFIG_FILEPATH'):
     AWS_CONFIG_FILEPATH = Path(os.getenv('AWS_CONFIG_FILEPATH'))

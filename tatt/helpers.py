@@ -1,9 +1,10 @@
+import pathlib
+import subprocess
 from typing import Dict, List
 
-from tatt import config, exceptions, vendors
+import audioread
 
-LB = '\n'
-TAB = '\t'
+from tatt import config, exceptions, vendors
 
 
 def make_string_all_services(free_only=False):
@@ -16,11 +17,14 @@ def make_string_all_services(free_only=False):
         format_fill = "free "
     all_services_string = all_services_string_formatter.format(format_fill)
 
+    
+
     for service_name, module in vendors.SERVICES.items():
-        if free_only and module.cost_per_15_seconds > 0:
+        transcriber = getattr(module, config.SERVICE_CLASS_NAME)
+        if free_only and transcriber.cost_per_15_seconds > 0:
             continue
         all_services_string += (
-   f'{TAB}{service_name}{TAB}{TAB}${module.cost_per_15_seconds} per 15 seconds'
+   f'\t{service_name}\t\t${transcriber.cost_per_15_seconds} per 15 seconds\n'
         )
 
     return all_services_string + '\n'
@@ -78,7 +82,7 @@ def get_transcription_jobs(
     for stt_name in vendors.SERVICES:
         if service_name is None or service_name == stt_name:
             service = get_service(stt_name)
-            service._setup() # check for AWS credentials and create buckets
+            service._setup()
             jobs = service.get_transcription_jobs(job_name_query=name,
                                                   status=status)
             if jobs:
@@ -100,3 +104,46 @@ def get_transcription_jobs_dict():
             for service_name, job_list in jobs.items()
             for job in job_list
             }
+
+
+def get_num_audio_channels(filepath):
+    if isinstance(filepath, pathlib.PurePosixPath):
+        filepath = str(filepath)
+    with audioread.audio_open(filepath) as f:
+        return f.channels
+    pass
+
+
+def shell_call(command):
+    return subprocess.check_output(command, shell=True)
+
+
+def change_file_extension(filepath, format_name):
+    extension = pathlib.Path(filepath).suffix
+    if isinstance(filepath, pathlib.PurePosixPath):
+        filepath = str(filepath)
+    return filepath.replace(extension, f'.{format_name}')
+
+
+def convert_file(filepath, format_name):
+    if format_name != 'flac':
+        raise NotSupported('Only flac is supported currently.')
+    else:
+        convert_flags = '-c:a flac'
+
+    output_filepath = change_file_extension(filepath, format_name)
+    shell_call(f'ffmpeg -i {filepath} {convert_flags} {output_filepath}')
+    return output_filepath
+
+
+def make_json_friendly(json_string):
+    lines = [line.strip() for line in json_string.split('\n')]
+    new_lines = []
+    for index, line in enumerate(lines):
+        if '{' in line and ':' not in line:
+            line = line.replace('{', ':{')
+        if '{' not in line and index != 0:
+            line += ','
+        # TODO: regex to get words not surrounded by quotes
+        new_lines.append(line)
+    return ''.join(new_lines)

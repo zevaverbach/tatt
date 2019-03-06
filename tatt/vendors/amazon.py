@@ -12,9 +12,8 @@ from tatt import exceptions
 from .vendor import TranscriberBaseClass
 
 NAME = 'amazon'
-BUCKET_NAME_MEDIA = config.AWS_BUCKET_NAME_FMTR_MEDIA.format(NAME)
-BUCKET_NAME_TRANSCRIPT = config.AWS_BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
-cost_per_15_seconds = .024 / 4
+BUCKET_NAME_MEDIA = config.BUCKET_NAME_FMTR_MEDIA.format(NAME)
+BUCKET_NAME_TRANSCRIPT = config.BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
 
 
 def _check_for_config() -> bool:
@@ -26,6 +25,7 @@ def _check_for_config() -> bool:
 
 class Transcriber(TranscriberBaseClass):
 
+    cost_per_15_seconds = .024 / 4
     bucket_names = {'media': BUCKET_NAME_MEDIA,
                     'transcript': BUCKET_NAME_TRANSCRIPT}
 
