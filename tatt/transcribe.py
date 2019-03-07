@@ -22,16 +22,20 @@ def cli():
 def get(name, save, pretty):
     """Downloads and/or saves completed transcript."""
     try:
-        transcript = json.dumps(helpers.get_transcript(name), 
-                                indent=4 if pretty else None)
+        transcript, service = helpers.get_transcript(name)
     except exceptions.DoesntExistError:
         raise click.ClickException(f'no such transcript {name}')
     except exceptions.NotAvailable as e:
         raise click.ClickException(str(e))
 
     file = None
-    if save:
+    if service.transcript_type == dict:
+        transcript = json.dumps(transcript, indent=4 if pretty else None)
         filepath = f'{name}.json'
+    else:
+        filepath = f'{name}.txt'
+
+    if save:
         file = open(filepath, 'w')
 
     click.echo(transcript, file=file)

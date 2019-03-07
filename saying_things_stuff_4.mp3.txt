@@ -1,0 +1,202 @@
+alternatives {
+  transcript: "testing"
+  confidence: 0.9585370421409607
+  words {
+    start_time {
+      seconds: 4
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 5
+      nanos: 300000000
+    }
+    word: "testing"
+    confidence: 0.9585370421409607
+  }
+}
+channel_tag: 2
+language_code: "en-us"
+
+alternatives {
+  transcript: " This is everybody saying things."
+  confidence: 0.8421146273612976
+  words {
+    start_time {
+      seconds: 4
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 5
+      nanos: 300000000
+    }
+    word: "testing"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 200000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    word: "This"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 800000000
+    }
+    word: "is"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 800000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 800000000
+    }
+    word: "everybody"
+    confidence: 0.5004213452339172
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 800000000
+    }
+    end_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    word: "saying"
+    confidence: 0.7137818932533264
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 9
+      nanos: 200000000
+    }
+    word: "things."
+    confidence: 0.9628734588623047
+    speaker_tag: 2
+  }
+}
+channel_tag: 1
+language_code: "en-us"
+
+alternatives {
+  transcript: " 2019"
+  confidence: 0.9188541173934937
+  words {
+    start_time {
+      seconds: 4
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 5
+      nanos: 300000000
+    }
+    word: "testing"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 200000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    word: "This"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 800000000
+    }
+    word: "is"
+    confidence: 0.9585370421409607
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 800000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 800000000
+    }
+    word: "everybody"
+    confidence: 0.5004213452339172
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 800000000
+    }
+    end_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    word: "saying"
+    confidence: 0.7137818932533264
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 9
+      nanos: 200000000
+    }
+    word: "things."
+    confidence: 0.9628734588623047
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 10
+      nanos: 300000000
+    }
+    end_time {
+      seconds: 11
+      nanos: 600000000
+    }
+    word: "2019"
+    confidence: 0.901819109916687
+    speaker_tag: 2
+  }
+}
+channel_tag: 1
+language_code: "en-us"
+

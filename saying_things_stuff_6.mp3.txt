@@ -1,0 +1,233 @@
+alternatives {
+  transcript: "Testing, this is Zev, Ivory box saying things."
+  confidence: 0.800268292427063
+  words {
+    start_time {
+      seconds: 4
+    }
+    end_time {
+      seconds: 5
+      nanos: 500000000
+    }
+    word: "Testing,"
+    confidence: 0.8863372206687927
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 5
+      nanos: 500000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    word: "this"
+    confidence: 0.8322268724441528
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 900000000
+    }
+    word: "is"
+    confidence: 0.7659580111503601
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 900000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 300000000
+    }
+    word: "Zev,"
+    confidence: 0.9128385782241821
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 300000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 700000000
+    }
+    word: "Ivory"
+    confidence: 0.7265068292617798
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 900000000
+    }
+    word: "box"
+    confidence: 0.7768470644950867
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 900000000
+    }
+    end_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    word: "saying"
+    confidence: 0.8872998952865601
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 9
+      nanos: 400000000
+    }
+    word: "things."
+    confidence: 0.9128385782241821
+    speaker_tag: 2
+  }
+}
+channel_tag: 2
+language_code: "en-us"
+
+alternatives {
+  transcript: " 2019"
+  confidence: 0.7211146354675293
+  words {
+    start_time {
+      seconds: 4
+    }
+    end_time {
+      seconds: 5
+      nanos: 500000000
+    }
+    word: "Testing,"
+    confidence: 0.8863372206687927
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 5
+      nanos: 500000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    word: "this"
+    confidence: 0.8322268724441528
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 600000000
+    }
+    end_time {
+      seconds: 6
+      nanos: 900000000
+    }
+    word: "is"
+    confidence: 0.7659580111503601
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 6
+      nanos: 900000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 300000000
+    }
+    word: "Zev,"
+    confidence: 0.9128385782241821
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 300000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 700000000
+    }
+    word: "Ivory"
+    confidence: 0.7265068292617798
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 7
+      nanos: 900000000
+    }
+    word: "box"
+    confidence: 0.7768470644950867
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 7
+      nanos: 900000000
+    }
+    end_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    word: "saying"
+    confidence: 0.8872998952865601
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 8
+      nanos: 700000000
+    }
+    end_time {
+      seconds: 9
+      nanos: 400000000
+    }
+    word: "things."
+    confidence: 0.9128385782241821
+    speaker_tag: 2
+  }
+  words {
+    start_time {
+      seconds: 10
+      nanos: 300000000
+    }
+    end_time {
+      seconds: 11
+      nanos: 500000000
+    }
+    word: "2019"
+    confidence: 0.7581849098205566
+    speaker_tag: 2
+  }
+}
+channel_tag: 2
+language_code: "en-us"
+

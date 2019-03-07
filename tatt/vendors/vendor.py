@@ -1,7 +1,7 @@
 import abc
 import os
 from pathlib import PurePath
-from typing import List
+from typing import List, Union
 
 from tatt import exceptions
 
@@ -12,6 +12,8 @@ class TranscriberBaseClass:
 
     def __init__(self, filepath):
         self._setup()
+        if ' ' in filepath:
+            raise exceptions.FormatError('Please don\'t put any spaces in the filename.')
         self.filepath = PurePath(filepath)
         self.basename = str(os.path.basename(self.filepath))
 
@@ -22,6 +24,11 @@ class TranscriberBaseClass:
         This must be defined as a class attribute, to be printed when raising
         such an error.
         """
+        pass
+
+    @property
+    @abc.abstractmethod
+    def transcript_type(self):
         pass
 
     @property
@@ -56,7 +63,7 @@ class TranscriberBaseClass:
 
     @classmethod
     @abc.abstractmethod
-    def retrieve_transcript(transcription_job_name: str) -> dict:
+    def retrieve_transcript(transcription_job_name: str) -> Union[str, dict]:
         pass
 
     @classmethod

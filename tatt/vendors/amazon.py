@@ -14,6 +14,7 @@ from .vendor import TranscriberBaseClass
 NAME = 'amazon'
 BUCKET_NAME_MEDIA = config.BUCKET_NAME_FMTR_MEDIA.format(NAME)
 BUCKET_NAME_TRANSCRIPT = config.BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
+TRANSCRIPT_TYPE = dict
 
 
 def _check_for_config() -> bool:
@@ -23,6 +24,7 @@ def _check_for_config() -> bool:
         )
 
 
+
 class Transcriber(TranscriberBaseClass):
 
     cost_per_15_seconds = .024 / 4
@@ -30,6 +32,7 @@ class Transcriber(TranscriberBaseClass):
                     'transcript': BUCKET_NAME_TRANSCRIPT}
 
     no_config_error_message = 'please run "aws configure" first'
+    transcript_type = TRANSCRIPT_TYPE
 
     if _check_for_config():
         tr = boto3.client('transcribe')
@@ -120,7 +123,8 @@ class Transcriber(TranscriberBaseClass):
         return jobs
 
     @classmethod
-    def retrieve_transcript(cls, transcription_job_name: str) -> dict:
+    def retrieve_transcript(cls, transcription_job_name: str
+            ) -> TRANSCRIPT_TYPE:
         job = cls.tr.get_transcription_job(
             TranscriptionJobName=transcription_job_name
         )['TranscriptionJob']

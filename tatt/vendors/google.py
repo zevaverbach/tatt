@@ -14,12 +14,13 @@ from google.cloud import (
     exceptions as gc_exceptions,
         )
 
-from tatt import exceptions, helpers, config
+from tatt import exceptions, helpers, config as config_mod
 from .vendor import TranscriberBaseClass
 
 NAME = 'google'
-BUCKET_NAME_TRANSCRIPT = config.BUCKET_NAME_FMTR_TRANSCRIPT_GOOGLE.format(
+BUCKET_NAME_TRANSCRIPT = config_mod.BUCKET_NAME_FMTR_TRANSCRIPT_GOOGLE.format(
         'goog')
+TRANSCRIPT_TYPE = str
 
 
 def _check_for_config():
@@ -35,6 +36,7 @@ class Transcriber(TranscriberBaseClass):
             'and put the path to your credentials in an '
             'environment variable "GOOGLE_APPLICATION_CREDENTIALS"'
             )
+    transcript_type = TRANSCRIPT_TYPE
 
     if _check_for_config():
         speech_client = speech.SpeechClient()
@@ -74,10 +76,6 @@ class Transcriber(TranscriberBaseClass):
     def file_format(self):
         return pathlib.Path(self.filepath).suffix[1:].lower()
 
-    @property
-    def transcript_name(self):
-        return self.basename + '.txt'
-
     @staticmethod
     def check_for_config() -> bool:
         return _check_for_config()
@@ -89,19 +87,22 @@ class Transcriber(TranscriberBaseClass):
     def _check_if_transcript_exists(self, transcript_name=None):
         return storage.Blob(
                     bucket=self.transcript_bucket, 
-                    name=transcript_name or self.transcript_name
+                    name=transcript_name or self.basename
                            ).exists(self.storage_client)
 
     def _request_transcription(
             self, 
             language_code='en-US',
-            model='video',
+            # model='video',
             ) -> str:
         """Returns the job_name"""
         if self._check_if_transcript_exists():
             raise exceptions.AlreadyExistsError(
                 f'{self.basename} already exists on {NAME}')
         num_audio_channels = helpers.get_num_audio_channels(self.filepath)
+
+        use_enhanced = config_mod.GOOGLE_SPEECH_USE_ENHANCED()
+        print(use_enhanced)
 
         with io.open(self.filepath, 'rb') as audio_file:
             content = audio_file.read()
@@ -116,7 +117,12 @@ class Transcriber(TranscriberBaseClass):
             enable_word_time_offsets=True,
             language_code=language_code,
             enable_automatic_punctuation=True,
-            model=model,
+            enable_speaker_diarization=True,
+            # not clear whether this has to be 'phone_call' in order to
+            # use_enhanced
+            model='video',
+            use_enhanced=use_enhanced,
+            # model=model,
             )
 
         self.operation = self.speech_client.long_running_recognize(config, 
@@ -143,7 +149,8 @@ class Transcriber(TranscriberBaseClass):
         return self.basename
 
     @classmethod
-    def retrieve_transcript(cls, transcription_job_name: str) -> dict:
+    def retrieve_transcript(cls, transcription_job_name: str
+            ) -> TRANSCRIPT_TYPE:
         """Get transcript from BUCKET_NAME_TRANSCRIPT"""
         if not cls._check_if_transcript_exists(
                 cls,
@@ -161,7 +168,7 @@ class Transcriber(TranscriberBaseClass):
         return transcript_text
 
     def upload_file(self, bucket_name, path):
-        blob = self.transcript_bucket.blob(self.transcript_name)
+        blob = self.transcript_bucket.blob(self.basename)
         blob.upload_from_filename(path)
 
     @classmethod

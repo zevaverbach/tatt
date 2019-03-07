@@ -17,3 +17,7 @@ class NotAvailable(Exception):
 
 class DependencyRequired(Exception):
     pass
+
+
+class FormatError(Exception):
+    pass

@@ -6,6 +6,7 @@ from typing import Dict, List
 import audioread
 
 from tatt import config, exceptions, vendors
+from tatt.vendors.vendor import TranscriberBaseClass
 
 
 def make_string_all_services(free_only=False):
@@ -40,13 +41,14 @@ def get_job(job_name):
     return job
 
 
-def get_transcript(job_name):
+def get_transcript(job_name) -> tuple:
     job = get_job(job_name)
     service = get_service(job['service_name'])
-    return service.retrieve_transcript(job_name)
+    transcript = service.retrieve_transcript(job_name)
+    return transcript, service
 
 
-def get_service(service_name):
+def get_service(service_name) -> TranscriberBaseClass:
     module = vendors.SERVICES[service_name]
     return getattr(module, config.SERVICE_CLASS_NAME)
 
