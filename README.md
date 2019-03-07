@@ -13,6 +13,7 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
 1. A recording to transcribe.
 2. a) An AWS account or b) a Google Cloud account with the speech-to-text API and
    Cloud Storage enabled.
+3. `ffmpeg` for some operations, but `tatt` will let you know when it's needed.
 
 
 ## Usage
@@ -66,7 +67,7 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
 
 
 ### Get A Completed Transcript
-    $ transcript get <job_name> # prints to stdout
+    $ transcribe get <job_name> # prints to stdout
 
     {'accountId': '416321668733',
      'jobName': 'a1bace5e-8b08-4ce4-b08c-834a23aafcf1',
@@ -82,15 +83,15 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
                             'type': 'pronunciation'},
                            ...
 
-    $ transcript get -f <job_name>
+    $ transcribe get --save <job_name>
 
-    Okay, downloaded <job_name>.json
+    Saved transcript to <job_name>.json
 
 
 ## Services Supported
 
   - [Amazon Transcribe](https://aws.amazon.com/transcribe/)
-  - [Google Speech](https://cloud.google.com/speech-to-text/)
+  - [Google Cloud Speech-to-Text](https://cloud.google.com/speech-to-text/)
 
 ### Planned
   - [Watson](https://www.ibm.com/watson/services/speech-to-text/) 
