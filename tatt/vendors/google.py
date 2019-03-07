@@ -166,7 +166,9 @@ class Transcriber(TranscriberBaseClass):
 
     @classmethod
     def get_transcription_jobs(cls, job_name_query=None, status=None) -> List[dict]:
-        del status
+
+        if status and status.lower() != 'completed':
+            return []
 
         jobs = []
 
