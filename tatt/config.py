@@ -5,6 +5,7 @@ import sqlite3
 
 BUCKET_NAME_FMTR_MEDIA = 'tatt-media-{}'
 BUCKET_NAME_FMTR_TRANSCRIPT = 'tatt-transcript-{}'
+BUCKET_NAME_FMTR_TRANSCRIPT_GOOGLE = 'tatt_transcript_{}'
 
 if os.getenv('AWS_CONFIG_FILEPATH'):
     AWS_CONFIG_FILEPATH = Path(os.getenv('AWS_CONFIG_FILEPATH'))

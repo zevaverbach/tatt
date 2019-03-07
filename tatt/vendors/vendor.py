@@ -1,6 +1,7 @@
 import abc
 import os
 from pathlib import PurePath
+from typing import List
 
 from tatt import exceptions
 
@@ -60,6 +61,6 @@ class TranscriberBaseClass:
 
     @classmethod
     @abc.abstractmethod
-    def get_transcription_jobs():
+    def get_transcription_jobs() -> List[dict]:
         pass
 

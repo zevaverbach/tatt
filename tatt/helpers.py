@@ -1,4 +1,5 @@
 import pathlib
+import re
 import subprocess
 from typing import Dict, List
 
@@ -111,7 +112,6 @@ def get_num_audio_channels(filepath):
         filepath = str(filepath)
     with audioread.audio_open(filepath) as f:
         return f.channels
-    pass
 
 
 def shell_call(command):
@@ -132,18 +132,5 @@ def convert_file(filepath, format_name):
         convert_flags = '-c:a flac'
 
     output_filepath = change_file_extension(filepath, format_name)
-    shell_call(f'ffmpeg -i {filepath} {convert_flags} {output_filepath}')
+    shell_call(f'ffmpeg -y -i {filepath} {convert_flags} {output_filepath}')
     return output_filepath
-
-
-def make_json_friendly(json_string):
-    lines = [line.strip() for line in json_string.split('\n')]
-    new_lines = []
-    for index, line in enumerate(lines):
-        if '{' in line and ':' not in line:
-            line = line.replace('{', ':{')
-        if '{' not in line and index != 0:
-            line += ','
-        # TODO: regex to get words not surrounded by quotes
-        new_lines.append(line)
-    return ''.join(new_lines)

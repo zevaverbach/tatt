@@ -13,3 +13,7 @@ class DoesntExistError(Exception):
 
 class NotAvailable(Exception):
     pass
+
+
+class DependencyRequired(Exception):
+    pass

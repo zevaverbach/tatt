@@ -2,14 +2,24 @@ import io
 import json
 import os
 import pathlib
+import shutil
+import tempfile
+from time import sleep
+from typing import List
 
-from google.cloud import speech_v1p1beta1 as speech
+from google.api_core import operations_v1
+from google.cloud import (
+    speech_v1p1beta1 as speech,
+    storage,
+    exceptions as gc_exceptions,
+        )
 
 from tatt import exceptions, helpers, config
 from .vendor import TranscriberBaseClass
 
 NAME = 'google'
-BUCKET_NAME_TRANSCRIPT = config.BUCKET_NAME_FMTR_TRANSCRIPT.format(NAME)
+BUCKET_NAME_TRANSCRIPT = config.BUCKET_NAME_FMTR_TRANSCRIPT_GOOGLE.format(
+        'goog')
 
 
 def _check_for_config():
@@ -27,46 +37,60 @@ class Transcriber(TranscriberBaseClass):
             )
 
     if _check_for_config():
-        client = speech.SpeechClient()
+        speech_client = speech.SpeechClient()
+        storage_client = storage.Client()
+        transcript_bucket = storage_client.get_bucket(BUCKET_NAME_TRANSCRIPT)
 
     def __init__(self, filepath):
         super().__init__(filepath)
-        self.convert_file_format_if_needed()
 
     @classmethod
     def _setup(cls):
         super()._setup()
-        if not cls.check_for_bucket(BUCKET_NAME_TRANSCRIPT):
-            print('creating a transcript bucket on Google Cloud Storage')
-            cls.make_bucket(BUCKET_NAME_TRANSCRIPT)
+        if not shutil.which('gsutil'):
+            raise exceptions.DependencyRequired(
+                'Please install gcloud using the steps here:'
+                'https://cloud.google.com/storage/docs/gsutil_install')
+
+        cls._make_bucket_if_doesnt_exist(BUCKET_NAME_TRANSCRIPT)
 
     @classmethod
-    def make_bucket(cls, bucket_name):
-        pass
-
-    @classmethod
-    def check_for_bucket(cls, bucket_name):
-        pass
+    def _make_bucket_if_doesnt_exist(cls, bucket_name):
+        try:
+            cls.storage_client.create_bucket(bucket_name)
+        except gc_exceptions.Conflict:
+            # this might fail if a bucket by the name exists *anywhere* on GCS?
+            return
+        else:
+            print('made Google Cloud Storage Bucket for transcripts')
 
     def convert_file_format_if_needed(self):
         if self.file_format not in self.SUPPORTED_FORMATS:
+            if not shutil.which('ffmpeg'):
+                raise exceptions.DependencyRequired('please install ffmpeg')
             self.filepath = helpers.convert_file(self.filepath, 'flac')
 
     @property
     def file_format(self):
         return pathlib.Path(self.filepath).suffix[1:].lower()
 
+    @property
+    def transcript_name(self):
+        return self.basename + '.txt'
+
     @staticmethod
     def check_for_config() -> bool:
         return _check_for_config()
 
     def transcribe(self) -> str:
-        """
-        This should do any required logic, 
-        then call self._request_transcription.
-        It should return the job_name.
-        """
+        self.convert_file_format_if_needed()
         self._request_transcription()
+
+    def _check_if_transcript_exists(self, transcript_name=None):
+        return storage.Blob(
+                    bucket=self.transcript_bucket, 
+                    name=transcript_name or self.transcript_name
+                           ).exists(self.storage_client)
 
     def _request_transcription(
             self, 
@@ -74,6 +98,9 @@ class Transcriber(TranscriberBaseClass):
             model='video',
             ) -> str:
         """Returns the job_name"""
+        if self._check_if_transcript_exists():
+            raise exceptions.AlreadyExistsError(
+                f'{self.basename} already exists on {NAME}')
         num_audio_channels = helpers.get_num_audio_channels(self.filepath)
 
         with io.open(self.filepath, 'rb') as audio_file:
@@ -92,43 +119,54 @@ class Transcriber(TranscriberBaseClass):
             model=model,
             )
 
-        self.operation = self.client.long_running_recognize(config, audio)
+        self.operation = self.speech_client.long_running_recognize(config, 
+                                                                   audio)
 
-        def my_callback(future):
-            result = future.result()
-            # save json.dumps(result) to file
-            # TODO: see what others have done to make this easy (BBC guy)
-            self.upload_file(BUCKET_NAME_TRANSCRIPT, filepath)
-            # delete file
+        print('transcribing...')
+        while not self.operation.done():
+            sleep(1)
+            print('.')
 
-        self.operation.add_done_callback(my_callback)
+        result_list = []
 
-        return self.filepath.name
+        for result in self.operation.result().results:
+            result_list.append(str(result))
+
+        print('saving transcript')
+        transcript_path = '/tmp/transcript.txt'
+        with open(transcript_path, 'w') as fout:
+            fout.write('\n'.join(result_list))
+        print('uploading transcript')
+        self.upload_file(BUCKET_NAME_TRANSCRIPT, transcript_path)
+        os.remove(transcript_path)
+
+        return self.basename
 
     @classmethod
     def retrieve_transcript(cls, transcription_job_name: str) -> dict:
         """Get transcript from BUCKET_NAME_TRANSCRIPT"""
-        # for result in results:
+        if not cls._check_if_transcript_exists(
+                cls,
+                transcript_name=transcription_job_name):
+            raise exceptions.DoesntExistError('no such transcript!')
+        blob = cls.transcript_bucket.blob(transcription_job_name)
+        f = tempfile.NamedTemporaryFile(delete=False)
+        f.close()
 
-            # leave enable_automatic_punctuation in?  it is applied to the words
-            # themselves, so it'll have to be processed...
+        blob.download_to_filename(f.name)
+        with open(f.name) as fin:
+            transcript_text = fin.read()
 
-            # for word in result.alternatives[0].words:
-            #     print(word)
-            #     print(type(word))
-            #     print(dir(word))
+        os.remove(f.name)
+        return transcript_text
 
-        pass
+    def upload_file(self, bucket_name, path):
+        blob = self.transcript_bucket.blob(self.transcript_name)
+        blob.upload_from_filename(path)
 
     @classmethod
-    def upload_file(cls, bucket_name, path):
-        pass
-
-    @classmethod
-    def get_transcription_jobs(job_name_query, status):
-        """
-        Store pending jobs in some simple db or document, 
-        then remove them when the transcript appears in the bucket.
-        """
-        pass
-
+    def get_transcription_jobs(cls, job_name_query, status) -> List[dict]:
+        return [
+                    {'name': t.name, 'status': 'COMPLETED'}
+                    for t in cls.transcript_bucket.list_blobs()
+            ]
