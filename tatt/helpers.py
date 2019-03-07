@@ -124,10 +124,18 @@ def get_transcription_jobs_dict():
 
 
 def get_num_audio_channels(filepath):
+    return get_media_info(filepath).channels
+
+
+def get_sample_rate(filepath):
+    return get_media_info(filepath).samplerate
+
+
+def get_media_info(filepath):
     if isinstance(filepath, pathlib.PurePosixPath):
         filepath = str(filepath)
     with audioread.audio_open(filepath) as f:
-        return f.channels
+        return f
 
 
 def shell_call(command):

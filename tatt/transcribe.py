@@ -88,15 +88,33 @@ def status(job_name):
 
 
 @cli.command()
+@click.option('--punctuation', is_flag=True, default=True, 
+              help='only for Google Speech, defaults to True')
+@click.option('--speaker-id', is_flag=True, default=True, 
+              help='only for Google Speech, defaults to True')
+@click.option('--model', default='phone_call', 
+              help='only for Google Speech, defaults to "phone_call"')
+@click.option('--use-enhanced', is_flag=True, default=True,
+              help='only for Google Speech, defaults to True')
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
-def this(media_filepath, service_name):
+def this(media_filepath, service_name, punctuation, speaker_id, model,
+         use_enhanced):
     """Sends a media file to be transcribed."""
+    if service_name == 'google':
+        transcribe_kwargs = dict(
+            enable_automatic_punctuation=punctuation,
+            enable_speaker_diarization=speaker_id,
+            model=model,
+            use_enhanced=use_enhanced,
+            )
+    else:
+        transcribe_kwargs = {}
     try:
         service = get_service(service_name)
     except KeyError as e:
         raise click.ClickException(
-            f'No such service! {print_all_services(print_=False)}')
+            f'No such service! {helpers.make_string_all_services()}')
 
     try:
         s = service(media_filepath)
@@ -107,7 +125,7 @@ def this(media_filepath, service_name):
       f'Okay, transcribing {media_filepath} using {service_name}...')
 
     try:
-        job_num = s.transcribe()
+        job_num = s.transcribe(**transcribe_kwargs)
     except exceptions.AlreadyExistsError as e:
         raise click.ClickException(str(e))
     click.echo(f'Okay, job {job_num} is being transcribed.  Use "get" '

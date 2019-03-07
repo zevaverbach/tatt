@@ -8,14 +8,6 @@ BUCKET_NAME_FMTR_TRANSCRIPT = 'tatt-transcript-{}'
 BUCKET_NAME_FMTR_TRANSCRIPT_GOOGLE = 'tatt_transcript_{}'
 
 
-def GOOGLE_SPEECH_USE_ENHANCED():
-    enhanced = os.getenv('GOOGLE_SPEECH_USE_ENHANCED')
-    if enhanced and enhanced == 'true':
-        return True
-    else:
-        return False
-
-
 if os.getenv('AWS_CONFIG_FILEPATH'):
     AWS_CONFIG_FILEPATH = Path(os.getenv('AWS_CONFIG_FILEPATH'))
 else:

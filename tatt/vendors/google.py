@@ -30,7 +30,7 @@ def _check_for_config():
 class Transcriber(TranscriberBaseClass):
 
     SUPPORTED_FORMATS = ['flac']
-    cost_per_15_seconds = .009
+    cost_per_15_seconds = [.004, .006, .009]
     no_config_error_message = (
             'Please sign up for the Google Speech-to-Text API '
             'and put the path to your credentials in an '
@@ -80,9 +80,14 @@ class Transcriber(TranscriberBaseClass):
     def check_for_config() -> bool:
         return _check_for_config()
 
-    def transcribe(self) -> str:
+    def upload_file_if_too_big(self):
+        """10MB limit as of Mar 7, 2019"""
+        pass
+
+    def transcribe(self, **kwargs) -> str:
         self.convert_file_format_if_needed()
-        self._request_transcription()
+        self.upload_file_if_too_big()
+        self._request_transcription(**kwargs)
 
     def _check_if_transcript_exists(self, transcript_name=None):
         return storage.Blob(
@@ -93,16 +98,17 @@ class Transcriber(TranscriberBaseClass):
     def _request_transcription(
             self, 
             language_code='en-US',
-            # model='video',
+            enable_automatic_punctuation=True,
+            enable_speaker_diarization=True,
+            model='phone_call',
+            use_enhanced=True,
             ) -> str:
         """Returns the job_name"""
         if self._check_if_transcript_exists():
             raise exceptions.AlreadyExistsError(
                 f'{self.basename} already exists on {NAME}')
         num_audio_channels = helpers.get_num_audio_channels(self.filepath)
-
-        use_enhanced = config_mod.GOOGLE_SPEECH_USE_ENHANCED()
-        print(use_enhanced)
+        sample_rate = helpers.get_sample_rate(self.filepath)
 
         with io.open(self.filepath, 'rb') as audio_file:
             content = audio_file.read()
@@ -110,19 +116,16 @@ class Transcriber(TranscriberBaseClass):
 
         config = speech.types.RecognitionConfig(
             encoding=speech.enums.RecognitionConfig.AudioEncoding.FLAC,
-            sample_rate_hertz=44100,
+            sample_rate_hertz=sample_rate,
             audio_channel_count=num_audio_channels,
             enable_separate_recognition_per_channel=True,
             enable_word_confidence=True,
             enable_word_time_offsets=True,
             language_code=language_code,
-            enable_automatic_punctuation=True,
-            enable_speaker_diarization=True,
-            # not clear whether this has to be 'phone_call' in order to
-            # use_enhanced
-            model='video',
+            enable_automatic_punctuation=enable_automatic_punctuation,
+            enable_speaker_diarization=enable_speaker_diarization,
+            model=model,
             use_enhanced=use_enhanced,
-            # model=model,
             )
 
         self.operation = self.speech_client.long_running_recognize(config, 
