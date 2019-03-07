@@ -10,7 +10,9 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
 
 ## Dependencies
 
-An AWS account (the only supported STT provider as of Feb 12, 2019), and a recording to transcribe!
+1. A recording to transcribe.
+2. a) An AWS account or b) a Google Cloud account with the speech-to-text API and
+   Cloud Storage enabled.
 
 
 ## Usage
@@ -27,6 +29,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
       get       Downloads and/or saves completed transcript.
       list      Lists available STT services.
       services  Lists available speech-to-text services.
+      status    Check the status of a transcription job.
       this      Sends a media file to be transcribed.
 
 ### List All STT Services
@@ -34,7 +37,8 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 
     Here are all the available speech-to-text services:
 
-      amazon		(60 minutes per month for the first 12 months)
+      amazon		$0.006 per 15 seconds
+      google		$0.009 per 15 seconds
 
 ### Get Something Transcribed
     $ transcribe this <path_to_media_file> <service_name>
@@ -51,6 +55,7 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
     amazon  messed_up.mp4                           FAILED
     amazon  done_test.mp3                           COMPLETED
     amazon  also_done.MP3                           COMPLETED
+    google  hey_there.mp3                           COMPLETED
 
 
     $ transcribe list <job_name>
@@ -85,10 +90,10 @@ An AWS account (the only supported STT provider as of Feb 12, 2019), and a recor
 ## Services Supported
 
   - [Amazon Transcribe](https://aws.amazon.com/transcribe/)
+  - [Google Speech](https://cloud.google.com/speech-to-text/)
 
 ### Planned
   - [Watson](https://www.ibm.com/watson/services/speech-to-text/) 
-  - [Google Speech](https://cloud.google.com/speech-to-text/)
   - [Kaldi](https://github.com/kaldi-asr/kaldi) [ and/or things built on it ](https://github.com/lowerquality/gentle)
   - [Speechmatics](https://www.speechmatics.com/)
   - [Mozilla's new open-source STT thing](https://github.com/mozilla/DeepSpeech)

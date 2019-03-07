@@ -165,8 +165,14 @@ class Transcriber(TranscriberBaseClass):
         blob.upload_from_filename(path)
 
     @classmethod
-    def get_transcription_jobs(cls, job_name_query, status) -> List[dict]:
-        return [
-                    {'name': t.name, 'status': 'COMPLETED'}
-                    for t in cls.transcript_bucket.list_blobs()
-            ]
+    def get_transcription_jobs(cls, job_name_query=None, status=None) -> List[dict]:
+        del status
+
+        jobs = []
+
+        for t in cls.transcript_bucket.list_blobs():
+            if job_name_query is not None and t.name != job_name_query:
+                continue
+            jobs.append({'name': t.name, 'status': 'COMPLETED'})
+
+        return jobs

@@ -87,6 +87,15 @@ def get_transcription_jobs(
             jobs = service.get_transcription_jobs(job_name_query=name,
                                                   status=status)
             if jobs:
+                if name:
+                    exact_match_jobs = []
+                    for job in jobs:
+                        if job['name'] == name:
+                            exact_match_jobs.append(job)
+                    if not exact_match_jobs:
+                        continue
+                    else:
+                        jobs = exact_match_jobs
                 all_jobs[stt_name] = jobs
 
     if name and len(all_jobs) == 0:

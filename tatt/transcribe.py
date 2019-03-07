@@ -79,8 +79,9 @@ def status(job_name):
         raise click.ClickException('no job by that name')
     for job_list in jobs.values():
         for job in job_list:
-            click.echo(job['status'])
+            click.echo(f'{job["name"]}\t{job["status"]}')
             break
+        break
 
 
 @cli.command()

@@ -6,7 +6,7 @@ with open('README.md') as file:
 
 setup(
     name="tatt",
-    version="0.972",
+    version="0.973",
     py_modules=['tatt'],
     url='https://github.com/zevaverbach/tatt',
     install_requires=[
@@ -14,6 +14,9 @@ setup(
         'awscli',
         'boto3',
         'requests',
+        'google-cloud-speech',
+        'audioread',
+        'google-cloud-storage',
         ],
     include_package_data=True,
     packages=find_packages(),
