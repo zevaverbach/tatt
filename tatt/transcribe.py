@@ -44,15 +44,14 @@ def get(name, save, pretty):
 
 @cli.command()
 @click.option('--service', type=str, help="STT service name")
-@click.option('-n', '--name', type=str, help="transcription job name")
 @click.option('--status', type=str, help="completed | failed | in_progress")
-def list(service, name, status):
+def list(service, status):
     """Lists available STT services."""
     if service is not None and service not in vendors.SERVICES:
         raise click.ClickException(f'no such service: {service}')
 
     try:
-        all_jobs = get_transcription_jobs(service, name, status)
+        all_jobs = get_transcription_jobs(service_name=service, status=status)
     except exceptions.ConfigError as e:
         raise click.ClickException(str(e))
     else:

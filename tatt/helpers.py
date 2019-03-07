@@ -88,20 +88,25 @@ def get_transcription_jobs(
                                                   status=status)
             if jobs:
                 if name:
-                    exact_match_jobs = []
-                    for job in jobs:
-                        if job['name'] == name:
-                            exact_match_jobs.append(job)
-                    if not exact_match_jobs:
+                    jobs = get_exact_name_matches(jobs, name)
+                    # this is because AWS Transcribe doesn't have exact file
+                    # search
+                    if not jobs:
                         continue
-                    else:
-                        jobs = exact_match_jobs
                 all_jobs[stt_name] = jobs
 
     if name and len(all_jobs) == 0:
         raise exceptions.DoesntExistError
 
     return all_jobs
+
+
+def get_exact_name_matches(jobs, name):
+    exact_match_jobs = []
+    for job in jobs:
+        if job['name'] == name:
+            exact_match_jobs.append(job)
+    return exact_match_jobs
 
 
 def get_transcription_jobs_dict():
