@@ -70,10 +70,10 @@ class Transcriber(TranscriberBaseClass):
     def make_bucket(cls, bucket_name):
         cls.s3.create_bucket(Bucket=bucket_name)
 
-    def transcribe(self) -> str:
+    def transcribe(self, **kwargs) -> str:
         self._upload_file()
         try:
-            return self._request_transcription()
+            return self._request_transcription(**kwargs)
         except self.tr.exceptions.ConflictException:
             raise exceptions.AlreadyExistsError(
                 f'{self.basename} already exists on {NAME}')
@@ -83,9 +83,15 @@ class Transcriber(TranscriberBaseClass):
                 str(self.filepath),
                 self.basename)
 
-    def _request_transcription(self, language_code='en-US') -> str:
+    def _request_transcription(
+            self, 
+            language_code='en-US', 
+            num_speakers=2,
+            enable_speaker_diarization=True,
+            ) -> str:
         job_name = self.basename
-        self.tr.start_transcription_job(
+
+        kwargs = dict(
                 TranscriptionJobName=job_name,
                 LanguageCode=language_code,
                 MediaFormat=self.basename.split('.')[-1].lower(),
@@ -94,6 +100,16 @@ class Transcriber(TranscriberBaseClass):
                     },
                 OutputBucketName=self.bucket_names['transcript']
                 )
+
+        if enable_speaker_diarization:
+            kwargs.update(dict(
+                Settings={
+                    'ShowSpeakerLabels': True,
+                    'MaxSpeakerLabels': num_speakers,
+                    }
+                    ))
+
+        self.tr.start_transcription_job(**kwargs)
         return job_name
 
     @classmethod
