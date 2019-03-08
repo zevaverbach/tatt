@@ -100,6 +100,7 @@ class Transcriber(TranscriberBaseClass):
             language_code='en-US',
             enable_automatic_punctuation=True,
             enable_speaker_diarization=True,
+            num_speakers=2,
             model='phone_call',
             use_enhanced=True,
             ) -> str:
@@ -124,6 +125,7 @@ class Transcriber(TranscriberBaseClass):
             language_code=language_code,
             enable_automatic_punctuation=enable_automatic_punctuation,
             enable_speaker_diarization=enable_speaker_diarization,
+            diarization_speaker_count=num_speakers,
             model=model,
             use_enhanced=use_enhanced,
             )

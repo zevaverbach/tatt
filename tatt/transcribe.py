@@ -90,15 +90,22 @@ def status(job_name):
 @cli.command()
 @click.option('--punctuation', is_flag=True, default=True, 
               help='only for Google Speech, defaults to True')
-@click.option('--speaker-id', is_flag=True, default=True, 
-              help='only for Google Speech, defaults to True')
+@click.option('--speaker-id/--no-speaker-id', is_flag=True, default=True, 
+              help='only for google and amazon, defaults to True')
+@click.option('--num_speakers', default=2, type=int,
+              help='only for google and amazon, defaults to 2')
 @click.option('--model', default='phone_call', 
               help='only for Google Speech, defaults to "phone_call"')
 @click.option('--use-enhanced', is_flag=True, default=True,
               help='only for Google Speech, defaults to True')
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
-def this(media_filepath, service_name, punctuation, speaker_id, model,
+def this(media_filepath, 
+         service_name, 
+         punctuation,
+         speaker_id,
+         num_speakers,
+         model,
          use_enhanced):
     """Sends a media file to be transcribed."""
     if service_name == 'google':
@@ -107,7 +114,13 @@ def this(media_filepath, service_name, punctuation, speaker_id, model,
             enable_speaker_diarization=speaker_id,
             model=model,
             use_enhanced=use_enhanced,
+            num_speakers=num_speakers,
             )
+    elif service_name == 'amazon':
+        transcribe_kwargs = dict(
+            enable_speaker_diarization=speaker_id,
+            num_speakers=num_speakers,
+                )
     else:
         transcribe_kwargs = {}
     try:
