@@ -48,6 +48,12 @@ def get_transcript(job_name) -> tuple:
     return transcript, service
 
 
+def get_transcript_format(job_name) -> str:
+    job = get_job(job_name)
+    service = get_service(job['service_name'])
+    return service.transcript_type
+
+
 def get_service(service_name) -> TranscriberBaseClass:
     module = vendors.SERVICES[service_name]
     return getattr(module, config.SERVICE_CLASS_NAME)
