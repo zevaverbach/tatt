@@ -27,11 +27,12 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
       --help  Show this message and exit.
 
     Commands:
-      get       Downloads and/or saves completed transcript.
-      list      Lists available STT services.
-      services  Lists available speech-to-text services.
-      status    Check the status of a transcription job.
-      this      Sends a media file to be transcribed.
+      get        Downloads and/or saves completed transcript.
+      languages
+      list       Lists available STT services.
+      services   Lists available speech-to-text services.
+      status     Check the status of a transcription job.
+      this       Sends a media file to be transcribed.
 
 ### List All STT Services
     $ transcribe services
@@ -46,6 +47,23 @@ tatt is a CLI for creating and managing speech-to-text transcripts.
 
     Okay, transcribing <path_to_media_file> using <service_name>...
     Okay, job <job_name> is being transcribed.  Use "get" command to download it.
+
+    $ transcribe this --help
+
+    Usage: transcribe this [OPTIONS] MEDIA_FILEPATH SERVICE_NAME
+
+    Sends a media file to be transcribed.
+
+    Options:
+      --punctuation                   only for Google Speech, defaults to True
+      --speaker-id / --no-speaker-id  only for google and amazon, defaults to True
+      --num_speakers INTEGER          only for google and amazon, defaults to 2
+      --model TEXT                    only for Google Speech, defaults to
+                                      "phone_call"
+      --use-enhanced                  only for Google Speech, defaults to True
+      --language-code TEXT            only for google and amazon, defaults to en-
+                                      US
+      --help                          Show this message and exit.
 
 ### List Transcripts
     $ transcribe list
