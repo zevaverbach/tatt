@@ -88,6 +88,15 @@ def status(job_name):
 
 
 @cli.command()
+@click.argument('service_name', type=click.Choice(vendors.SERVICES))
+def languages(service_name):
+    service = get_service(service_name)
+    languages_string = "\n" + "\n".join(service.language_list())
+    click.echo(
+            f'{service.name} supports {languages_string}')
+
+
+@cli.command()
 @click.option('--punctuation', is_flag=True, default=True, 
               help='only for Google Speech, defaults to True')
 @click.option('--speaker-id/--no-speaker-id', is_flag=True, default=True, 
@@ -98,6 +107,8 @@ def status(job_name):
               help='only for Google Speech, defaults to "phone_call"')
 @click.option('--use-enhanced', is_flag=True, default=True,
               help='only for Google Speech, defaults to True')
+@click.option('--language-code', default='en-US',
+              help='only for google and amazon, defaults to en-US')
 @click.argument('media_filepath', type=str)
 @click.argument('service_name', type=str)
 def this(media_filepath, 
@@ -106,7 +117,9 @@ def this(media_filepath,
          speaker_id,
          num_speakers,
          model,
-         use_enhanced):
+         use_enhanced,
+         language_code,
+         ):
     """Sends a media file to be transcribed."""
     if service_name == 'google':
         transcribe_kwargs = dict(
@@ -115,14 +128,17 @@ def this(media_filepath,
             model=model,
             use_enhanced=use_enhanced,
             num_speakers=num_speakers,
+            language_code=language_code,
             )
     elif service_name == 'amazon':
         transcribe_kwargs = dict(
             enable_speaker_diarization=speaker_id,
             num_speakers=num_speakers,
+            language_code=language_code,
                 )
     else:
         transcribe_kwargs = {}
+
     try:
         service = get_service(service_name)
     except KeyError as e:

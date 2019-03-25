@@ -27,12 +27,16 @@ def _check_for_config() -> bool:
 
 class Transcriber(TranscriberBaseClass):
 
+    name = NAME
     cost_per_15_seconds = .024 / 4
     bucket_names = {'media': BUCKET_NAME_MEDIA,
                     'transcript': BUCKET_NAME_TRANSCRIPT}
 
     no_config_error_message = 'please run "aws configure" first'
     transcript_type = TRANSCRIPT_TYPE
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/transcribe.html
+    _language_list = ['en-US', 'es-US', 'en-AU', 'fr-CA', 'en-GB', 'de-DE', 
+                     'pt-BR', 'fr-FR', 'it-IT', 'ko-KR']
 
     if _check_for_config():
         tr = boto3.client('transcribe')

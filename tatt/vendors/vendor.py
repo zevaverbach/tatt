@@ -33,6 +33,11 @@ class TranscriberBaseClass:
 
     @property
     @abc.abstractmethod
+    def _language_list(self):
+        pass
+
+    @property
+    @abc.abstractmethod
     def cost_per_15_seconds(self):
         """This must be defined as a class attribute."""
         pass
@@ -42,9 +47,9 @@ class TranscriberBaseClass:
         if not cls.check_for_config():
             raise exceptions.ConfigError(cls.no_config_error_message)
 
-    @staticmethod
+    @classmethod
     @abc.abstractmethod
-    def check_for_config() -> bool:
+    def check_for_config(cls) -> bool:
         pass
 
     @abc.abstractmethod
@@ -62,8 +67,13 @@ class TranscriberBaseClass:
         pass
 
     @classmethod
+    def language_list(cls) -> List[str]:
+        return sorted(cls._language_list)
+
+    @classmethod
     @abc.abstractmethod
-    def retrieve_transcript(transcription_job_name: str) -> Union[str, dict]:
+    def retrieve_transcript(cls, transcription_job_name: str
+            ) -> Union[str, dict]:
         pass
 
     @classmethod
