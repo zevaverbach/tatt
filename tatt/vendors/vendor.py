@@ -12,8 +12,8 @@ class TranscriberBaseClass:
 
     def __init__(self, filepath):
         self._setup()
-        if ' ' in filepath:
-            raise exceptions.FormatError('Please don\'t put any spaces in the filename.')
+        if " " in filepath:
+            raise exceptions.FormatError("Please don't put any spaces in the filename.")
         self.filepath = PurePath(filepath)
         self.basename = str(os.path.basename(self.filepath))
 
@@ -52,14 +52,14 @@ class TranscriberBaseClass:
     def check_for_config(cls) -> bool:
         pass
 
-    @abc.abstractmethod
-    def transcribe(self) -> str:
+    def transcribe(self, **kwargs) -> str:
         """
         This should do any required logic, 
         then call self._request_transcription.
         It should return the job_name.
         """
-        pass
+        if kwargs["language_code"] not in self.language_list():
+            raise KeyError(f"No such language code {kwargs['language_code']}")
 
     @abc.abstractmethod
     def _request_transcription(self) -> str:
@@ -72,12 +72,10 @@ class TranscriberBaseClass:
 
     @classmethod
     @abc.abstractmethod
-    def retrieve_transcript(cls, transcription_job_name: str
-            ) -> Union[str, dict]:
+    def retrieve_transcript(cls, transcription_job_name: str) -> Union[str, dict]:
         pass
 
     @classmethod
     @abc.abstractmethod
     def get_transcription_jobs() -> List[dict]:
         pass
-
