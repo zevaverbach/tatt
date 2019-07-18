@@ -1,31 +1,32 @@
 from setuptools import setup, find_packages
 
 
-with open('README.md') as file:
+with open("README.md") as file:
     long_description = file.read()
 
 setup(
     name="tatt",
-    version="0.98",
-    py_modules=['tatt'],
-    url='https://github.com/zevaverbach/tatt',
+    version="0.981",
+    py_modules=["tatt"],
+    url="https://github.com/zevaverbach/tatt",
     install_requires=[
-        'Click',
-        'awscli',
-        'boto3',
-        'requests',
-        'google-cloud-speech',
-        'audioread',
-        'google-cloud-storage',
-        ],
+        "Click",
+        "awscli",
+        "boto3",
+        "requests",
+        "google-cloud-speech",
+        "audioread",
+        "google-cloud-storage",
+    ],
     include_package_data=True,
     packages=find_packages(),
-    description=('Tatt creates a uniform API for multiple speech-to-text '
-                 '(STT) services.'),
-    long_description_content_type='text/markdown',
+    description=(
+        "Tatt creates a uniform API for multiple speech-to-text " "(STT) services."
+    ),
+    long_description_content_type="text/markdown",
     long_description=long_description,
-    entry_points='''
+    entry_points="""
         [console_scripts]
         transcribe=tatt.transcribe:cli
-    ''',
-        )
+    """,
+)
